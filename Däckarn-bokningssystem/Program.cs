@@ -1,4 +1,6 @@
-﻿namespace Däckarn_bokningssystem
+﻿using System.ComponentModel;
+
+namespace Däckarn_bokningssystem
 {
     internal class Program
     {
@@ -12,15 +14,23 @@
                 "2. Logga in som kund\n" +
                 "3. Avsluta programmet");
 
-            while (true)
-            {
+            
+            
                 if (int.TryParse(Console.ReadLine(), out int userInput))
                 {
                     switch (userInput)
                     {
                         case 1: //admin menu
                             Console.WriteLine("Vänligen ange ditt lösenord");
-                            Console.ReadLine(); //här ska lösenordet verifieras
+                            string Password = "";
+
+                            while (Password != "abc123")
+                            {
+                                Password = Console.ReadLine();
+                                break; //lämnar loopen
+                             }
+                            AdminMenu();
+
 
                             AdminMenu();
                             break;
@@ -39,8 +49,8 @@
                     Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 2");
                     return;
                 }
-                break; //lämnar loopen
-            }
+           
+
         } //end of main
 
         static void AdminMenu()
@@ -75,6 +85,14 @@
                 "5. Logga ut\n\n" +
                 "6. Exit program\n");
 
+                    if (Password == "abc123") //här ska lösenordet verifieras
+                    {
+                        Console.WriteLine("Välkommen administratör!");
+                    }
+                    else
+                    {
+                   
+                        Console.WriteLine("Fel lösenord, försök igen"); 
 
 
 
