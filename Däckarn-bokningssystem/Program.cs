@@ -16,26 +16,32 @@ namespace Däckarn_bokningssystem
 
             
             
-                if (int.TryParse(Console.ReadLine(), out int userInput))
+            if (int.TryParse(Console.ReadLine(), out int userInput))
+            {
+                switch (userInput)
                 {
-                    switch (userInput)
-                    {
-                        case 1: //admin menu
-                            Console.WriteLine("Vänligen ange ditt lösenord");
-                            string Password = "";
+                    case 1: //admin
+                        Console.WriteLine("Vänligen ange ditt lösenord\n" +
+                        "skriv \"AVBRYT\" för att gå tillbaka");
+                        string Password = "";
 
-                            while (Password != "abc123")
+                        while (true)
+                        {
+                            Password = Console.ReadLine().ToLower();
+                            if (Password == "abc123") //lösenordet till admin är abc123
                             {
-                                Password = Console.ReadLine();
-                                break; //lämnar loopen
-                             }
-                            AdminMenu();
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Fel lösenord, försök igen");
+                            }
+                        }
+                        
+                        AdminMenu();
+                        break;
 
-
-                            AdminMenu();
-                            break;
-
-                        case 2: //user menu
+                        case 2: //user
                             UserMenu();
                             break;
 
@@ -68,7 +74,34 @@ namespace Däckarn_bokningssystem
                 "6. Logga ut\n\n" +
                 "7. Exit program\n");
 
-            Console.ReadLine();
+            int userInput;
+            while (true)
+            {
+                if (!int.TryParse(Console.ReadLine(), out userInput))
+                {
+                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 7");
+                    continue;
+                }
+                break;
+            }
+
+
+            switch (userInput)
+            {
+                case 1: //boka tid
+                    break;
+                case 2: //visa användarens bokade tider
+                    break;
+                case 3: //avboka tid
+                    break;
+                case 4: //skriva ut kontaktuppgifter
+                    PrintContactInfo();
+                    break;
+                case 5: //logga ut
+                    break;
+                case 6: //stäng ner programmet
+                    break;
+            }
         }
 
         static void UserMenu()
@@ -84,28 +117,36 @@ namespace Däckarn_bokningssystem
                 "4. Kontakt uppgifter\n" +
                 "5. Logga ut\n\n" +
                 "6. Exit program\n");
-
-                    if (Password == "abc123") //här ska lösenordet verifieras
-                    {
-                        Console.WriteLine("Välkommen administratör!");
-                    }
-                    else
-                    {
-                   
-                        Console.WriteLine("Fel lösenord, försök igen"); 
-
-
-
-            if (!int.TryParse(Console.ReadLine().ToString(), out int userInput))
+            int userInput;
+            while (true)
             {
-                Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 6");
+                if (!int.TryParse(Console.ReadLine(), out userInput))
+                {
+                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 6");
+                    continue;
+                }
+                break;
             }
 
-
-            Console.ReadLine();
+            switch (userInput)
+            {
+                case 1: //boka tid
+                    break;
+                case 2: //visa användarens bokade tider
+                    break;
+                case 3: //avboka tid
+                    break;
+                case 4: //skriva ut kontaktuppgifter
+                    PrintContactInfo();
+                    break;
+                case 5: //logga ut
+                    break;
+                case 6: //stäng ner programmet
+                    break;
+            }
         }
 
-        static void ContactInfo()
+        static void PrintContactInfo()
         {
             Console.WriteLine("Däckarns AB\n" +
                 "Telefon: 08-123 456 78\n" +
