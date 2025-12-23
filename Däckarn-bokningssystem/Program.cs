@@ -4,8 +4,13 @@ namespace Däckarn_bokningssystem
 {
     internal class Program
     {
+        static List<string> Bookings = new List<string>();
         static void Main(string[] args)
         {
+
+            //ServiceBooking serviceBooking = new ServiceBooking(12, new DateTime(2001, 08, 13), "gly342", "Hans Karlsson");
+            //Bookings.Add(serviceBooking.ToString());
+            //Console.WriteLine(Bookings[0]);
             Console.WriteLine("Välkommen till Däckarns!\n" +
                 "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
 
@@ -21,24 +26,27 @@ namespace Däckarn_bokningssystem
                 switch (userInput)
                 {
                     case 1: //admin
-                        Console.WriteLine("Vänligen ange ditt lösenord\n" +
+                        Console.WriteLine("Vänligen ange ditt lösenord (Admin)\n" + //skriver ut lösenordet i programmet för enkelhetens skull, vid riktigt program bör detta inte göras.
                         "skriv \"AVBRYT\" för att gå tillbaka");
-                        string Password = "";
+                        string password = "";
 
                         while (true)
                         {
-                            Password = Console.ReadLine().ToLower();
-                            if (Password == "abc123") //lösenordet till admin är abc123
+                            password = Console.ReadLine();
+                            if (password == "Admin") //lösenordet till admin är Admin
                             {
                                 break;
                             }
-                            else
+                            else if (password == "AVBRYT") 
                             {
-                                Console.WriteLine("Fel lösenord, försök igen");
+                                break;
+                            } else
+                            {
+                                Console.WriteLine("Fel lösenord, vänligen försök igen eller skriv \"AVBRYT\" för att gå tillbaka");
                             }
+                            AdminMenu();
                         }
                         
-                        AdminMenu();
                         break;
 
                         case 2: //user
@@ -103,6 +111,7 @@ namespace Däckarn_bokningssystem
                     break;
             }
         }
+
         static void UserMenu()
         {
             Console.Clear();
