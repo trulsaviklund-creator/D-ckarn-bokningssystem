@@ -12,6 +12,7 @@ namespace Däckarn_bokningssystem
         public DateTime ServiceDate { get; set; }
         public string RegNr { get; set; }
         public string CustomerName { get; set; }
+    
 
         public ServiceBooking (int serviceType, DateTime serviceDate, string regNr, string customerName)
         {

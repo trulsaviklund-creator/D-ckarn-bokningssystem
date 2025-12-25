@@ -97,6 +97,11 @@ namespace Däckarn_bokningssystem
             switch (userInput)
             {
                 case 1: //boka tid
+                    Console.Clear();
+                    Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+
+                    BookTime();
+
                     break;
                 case 2: //visa användarens bokade tider
                     break;
@@ -139,6 +144,11 @@ namespace Däckarn_bokningssystem
             switch (userInput)
             {
                 case 1: //boka tid
+                    Console.Clear();
+                    Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+
+                    BookTime();
+
                     break;
                 case 2: //visa användarens bokade tider
                     break;
@@ -160,5 +170,40 @@ namespace Däckarn_bokningssystem
                 "Telefon: 08-123 456 78\n" +
                 "Email: Däckarns@info.se");
         }
+
+        static void BookTime() //metod för att boka en tjänst
+        {
+            Console.WriteLine("Ange Förnamn:");
+            string firstName = Console.ReadLine();
+
+            Console.WriteLine("Ange Efternamn:");
+            string lastName = Console.ReadLine();
+
+            string regNr = "abc123";
+            Console.WriteLine("Ange Registreringsnummer:" + "\texempel: " + regNr);
+            regNr = Console.ReadLine();
+
+
+            Console.WriteLine("Välj tjänst:\n" +
+                "1. Däckbyte\n" +
+                "2. Däckförvaring\n" +
+                "3. Hjulinställning");
+            int serviceType = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("ange tiden för bokning:");
+             DateTime hour = DateTime.Parse(Console.ReadLine());
+
+
+            Console.WriteLine("Ange datum för bokning (mm-dd):");
+            DateTime serviceDate = DateTime.Parse(Console.ReadLine());
+
+            DateTime bookingDateTime = serviceDate.Date + hour.TimeOfDay;
+
+            //skapar en ny bokning
+            ServiceBooking newBooking = new ServiceBooking(serviceType, serviceDate, regNr, firstName + " " + lastName);
+            Bookings.Add(newBooking.ToString());
+            Console.WriteLine("Bokning skapad:\n" + newBooking.ToString());
+        }
     }
+
 }
