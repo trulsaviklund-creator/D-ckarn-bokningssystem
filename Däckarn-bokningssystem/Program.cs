@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace Däckarn_bokningssystem
 {
@@ -24,21 +24,17 @@ namespace Däckarn_bokningssystem
                     case 1: //admin
                         Console.WriteLine("Vänligen ange ditt lösenord (Admin)\n" + //skriver ut lösenordet i programmet för enkelhetens skull, vid riktigt program bör detta inte göras.
                         "skriv \"AVBRYT\" för att gå tillbaka");
-                        string password = "";
 
                         while (true)
                         {
-                            password = Console.ReadLine();
-                            if (password == "Admin") //lösenordet till admin är Admin
+                            string passwordInput = Console.ReadLine();
+                            if(passwordInput == "Admin")
                             {
                                 break;
                             }
-                            else if (password == "AVBRYT") 
+                            else
                             {
-                                break;
-                            } else
-                            {
-                                Console.WriteLine("Fel lösenord, vänligen försök igen eller skriv \"AVBRYT\" för att gå tillbaka");
+                                Console.WriteLine("felaktigt lösenord, försök igen");
                             }
                         }
                             AdminMenu();
@@ -65,6 +61,7 @@ namespace Däckarn_bokningssystem
 
         static void AdminMenu()
         {
+         
             Console.Clear();
             Console.WriteLine("~~ Administratörsmenyn - Däckarns ~~\n" +
             "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
@@ -93,7 +90,12 @@ namespace Däckarn_bokningssystem
             switch (userInput)
             {
                 case 1: //skriv ut alla bokningar
+                    foreach (var booking in Bookings)
+                    {
+                        Console.WriteLine("booking");
+                    }
                     break;
+
                 case 2: //lägg till bokning (boka tid)
                     Console.Clear();
                     Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
@@ -176,7 +178,6 @@ namespace Däckarn_bokningssystem
 
 
             //skriva in regnummer på fordnonet
-
             string regNr = "abc123";
             CollectPlate(ref regNr);
 
@@ -185,28 +186,23 @@ namespace Däckarn_bokningssystem
             int serviceTypeNum = 0;
             ChooseServiceType(ref serviceTypeNum);
 
-
-
-
             //välja datum
             DateTime serviceDate = DateTime.Now;
-
             CollectDate(ref serviceDate);
 
             //lägga in tiden
-            
             DateTime serviceTime = DateTime.Now;
-
             CollectTime(ref serviceTime, ref serviceDate);
 
 
 
             //skapar ett nytt boknings objekt
-
             ServiceBooking newBooking = new ServiceBooking(firstName + " " + lastName, regNr, serviceTypeNum, serviceTime);
             Bookings.Add(newBooking.ToString()); //lägger in den i listan med bokningar
             Console.WriteLine("Bokning skapad:\n" + newBooking.ToString()); //boknings bekräftelse till användaren
         }
+
+
         static void CollectName(ref string firstName, ref string lastName)
         {
             Console.WriteLine("Ange Förnamn:");
@@ -247,6 +243,7 @@ namespace Däckarn_bokningssystem
             return serviceTypeNum;
         }
 
+
         static DateTime CollectDate(ref DateTime serviceDate)
         {
             bool boolDate;
@@ -260,7 +257,7 @@ namespace Däckarn_bokningssystem
                 {
                     Console.WriteLine("Vänligen skriv datumet i format visat ovanför");
                 }
-                else if (serviceDate < DateTime.Now)
+                else if (serviceDate < DateTime.Now.Date)
                 {
                     Console.WriteLine("Vänligen skriv ett datum i framtiden.");
                 }
@@ -269,14 +266,14 @@ namespace Däckarn_bokningssystem
 
             return serviceDate;
         }
+
         
         static DateTime CollectTime(ref DateTime serviceTime, ref DateTime serviceDate)
         {
             bool boolTime;
             do
             {
-                Console.WriteLine("ange tiden för bokning:\n" +
-                "(\"15:00\")");
+                Console.WriteLine("ange tiden för bokning:\n(\"15:00\")");
                 boolTime = DateTime.TryParse(Console.ReadLine(), out serviceTime);
 
                 DateTime rounded = new DateTime(serviceDate.Year, serviceDate.Month, serviceDate.Day, serviceTime.Hour, 00, 00);
@@ -286,7 +283,7 @@ namespace Däckarn_bokningssystem
                 {
                     Console.WriteLine("Ange tid i rätt format!");
                 }
-                else if (serviceTime.Minute != 00)
+                else if (serviceTime.Minute != 0)
                 {
 
                     Console.WriteLine("vi kan bara boka tider hela timmar, ska vi boka in dig {0}?  (Y/N):", rounded.ToString("yyyy MMMM dd - HH:mm"));
@@ -313,6 +310,7 @@ namespace Däckarn_bokningssystem
                 else if (serviceTime < DateTime.Now)
                 {
                     Console.WriteLine("du kan inte boka bakåt i tiden");
+                    boolTime = false;
                 }
             } while (!boolTime);
             return serviceTime;
