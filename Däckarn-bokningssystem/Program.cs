@@ -180,7 +180,7 @@ namespace Däckarn_bokningssystem
             string lastName = Console.ReadLine();
 
             string regNr = "abc123";
-            Console.WriteLine("Ange Registreringsnummer:" + "\texempel: " + regNr);
+            Console.WriteLine("Ange Registreringsnummer:" + "\nexempel: " + regNr); 
             regNr = Console.ReadLine();
 
 
