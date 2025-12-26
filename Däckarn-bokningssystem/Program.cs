@@ -276,6 +276,22 @@ namespace Däckarn_bokningssystem
                 return isBooked;
         }
 
+        static bool IsBussinessHours(DateTime serviceTime)
+        {
+            bool isBussinessHours = true;
+
+            DateTime start = new DateTime(serviceTime.Year,serviceTime.Month,serviceTime.Day,07, 00, 00);
+            DateTime end = new DateTime(serviceTime.Year,serviceTime.Month,serviceTime.Day,15, 00, 00);
+
+
+            if(serviceTime >= start && serviceTime <= end)
+            {
+                isBussinessHours = false;
+            }
+
+            return isBussinessHours;
+        }
+
         static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
         {
             Console.WriteLine("Ange Förnamn:");
@@ -356,6 +372,11 @@ namespace Däckarn_bokningssystem
                 {
                     Console.WriteLine("Ange tid i rätt format!");
                 }
+                else if (IsBussinessHours(serviceTime))
+                {
+                    Console.WriteLine("please book a time between 7-15");
+                    boolTime = false;
+                }
                 else if (serviceTime.Minute != 0)
                 {
 
@@ -390,6 +411,8 @@ namespace Däckarn_bokningssystem
                     serviceTime = rounded;
 
                 }
+
+
 
                 if (IsBooked(serviceTime))
                 {
