@@ -25,7 +25,7 @@ namespace Däckarn_bokningssystem
 
         public override string ToString()
         {
-            return $"Kund: {CustomerName}, RegNr: {RegNr}, Tjänst: {ServiceType}, datum och tid: {ServiceTime}";
+            return $"Kund: {CustomerName} | RegNr: {RegNr} | Tjänst: {ServiceType} | datum och tid: {ServiceTime}";
         }
 
     }
