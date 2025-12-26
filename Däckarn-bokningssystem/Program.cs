@@ -7,10 +7,7 @@ namespace Däckarn_bokningssystem
         static List<string> Bookings = new List<string>();
         static void Main(string[] args)
         {
-
-            //ServiceBooking serviceBooking = new ServiceBooking(12, new DateTime(2001, 08, 13), "gly342", "Hans Karlsson");
-            //Bookings.Add(serviceBooking.ToString());
-            //Console.WriteLine(Bookings[0]);
+            //välkomst meny
             Console.WriteLine("Välkommen till Däckarns!\n" +
                 "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
 
@@ -19,8 +16,7 @@ namespace Däckarn_bokningssystem
                 "2. Logga in som kund\n" +
                 "3. Avsluta programmet");
 
-            
-            
+
             if (int.TryParse(Console.ReadLine(), out int userInput))
             {
                 switch (userInput)
@@ -44,9 +40,9 @@ namespace Däckarn_bokningssystem
                             {
                                 Console.WriteLine("Fel lösenord, vänligen försök igen eller skriv \"AVBRYT\" för att gå tillbaka");
                             }
-                            AdminMenu();
                         }
-                        
+                            AdminMenu();
+
                         break;
 
                         case 2: //user
@@ -71,13 +67,13 @@ namespace Däckarn_bokningssystem
         {
             Console.Clear();
             Console.WriteLine("~~ Administratörsmenyn - Däckarns ~~\n" +
-            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
+            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
 
             Console.WriteLine("-------------------------------");
             Console.WriteLine("1. Visa alla bokningar\n" +
                 "2. Lägg till en bokning\n" +
                 "3. Visa dagens bokningar\n" +
-                "4. Visa alla bokningar\n" +
+                "4. visa lediga tider\n" +
                 "5. Ta bort en bokning\n" +
                 "6. Logga ut\n\n" +
                 "7. Exit program\n");
@@ -96,23 +92,23 @@ namespace Däckarn_bokningssystem
 
             switch (userInput)
             {
-                case 1: //boka tid
+                case 1: //skriv ut alla bokningar
+                    break;
+                case 2: //lägg till bokning (boka tid)
                     Console.Clear();
                     Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
 
                     BookTime();
-
                     break;
-                case 2: //visa användarens bokade tider
+                case 3: //visa dagens bokningar
                     break;
-                case 3: //avboka tid
-                    break;
-                case 4: //skriva ut kontaktuppgifter
+                case 4: //visa lediga tider
                     PrintContactInfo();
                     break;
                 case 5: //logga ut
                     break;
                 case 6: //stäng ner programmet
+                    Environment.Exit(0);
                     break;
             }
         }
@@ -121,7 +117,7 @@ namespace Däckarn_bokningssystem
         {
             Console.Clear();
             Console.WriteLine("~~ Välkommen till Däckarns ~~\n" +
-            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
+            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
 
             Console.WriteLine("-------------------------------");
             Console.WriteLine("1. Boka tid\n" +
@@ -173,36 +169,153 @@ namespace Däckarn_bokningssystem
 
         static void BookTime() //metod för att boka en tjänst
         {
-            Console.WriteLine("Ange Förnamn:");
-            string firstName = Console.ReadLine();
 
-            Console.WriteLine("Ange Efternamn:");
-            string lastName = Console.ReadLine();
+            //skriva in boknings namn
+            string firstName = "", lastName = "";
+            CollectName(ref firstName, ref lastName);
+
+
+            //skriva in regnummer på fordnonet
 
             string regNr = "abc123";
-            Console.WriteLine("Ange Registreringsnummer:" + "\texempel: " + regNr);
+            CollectPlate(ref regNr);
+
+
+            //väljer service typ
+            int serviceTypeNum = 0;
+            ChooseServiceType(ref serviceTypeNum);
+
+
+
+
+            //välja datum
+            DateTime serviceDate = DateTime.Now;
+
+            CollectDate(ref serviceDate);
+
+            //lägga in tiden
+            
+            DateTime serviceTime = DateTime.Now;
+
+            CollectTime(ref serviceTime, ref serviceDate);
+
+
+
+            //skapar ett nytt boknings objekt
+
+            ServiceBooking newBooking = new ServiceBooking(firstName + " " + lastName, regNr, serviceTypeNum, serviceTime);
+            Bookings.Add(newBooking.ToString()); //lägger in den i listan med bokningar
+            Console.WriteLine("Bokning skapad:\n" + newBooking.ToString()); //boknings bekräftelse till användaren
+        }
+        static void CollectName(ref string firstName, ref string lastName)
+        {
+            Console.WriteLine("Ange Förnamn:");
+            firstName = Console.ReadLine();
+
+            Console.WriteLine("\nAnge Efternamn:");
+            lastName = Console.ReadLine();
+        }
+
+        static void CollectPlate(ref string regNr)
+        {
+
+            Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
             regNr = Console.ReadLine();
+        }
+
+        static int ChooseServiceType(ref int serviceTypeNum)
+        {
+            Console.WriteLine("\nVälj tjänst:\n" +
+            "1. Däckbyte\n" +
+            "2. Däckförvaring\n" +
+            "3. Hjulinställning");
+
+            while (true)
+            {
+                bool serviceType = int.TryParse(Console.ReadLine(), out serviceTypeNum);
+
+                if (serviceType && serviceTypeNum < 4 && serviceTypeNum > 0)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("skriv 1, 2 eller 3.");
+                }
+            }
+
+            return serviceTypeNum;
+        }
+
+        static DateTime CollectDate(ref DateTime serviceDate)
+        {
+            bool boolDate;
+            do
+            {
+                Console.WriteLine("Vilken dag vill du boka?" +
+                    "\n(\"åååå-mm-dd\")");
+                boolDate = DateTime.TryParse(Console.ReadLine(), out serviceDate);
+
+                if (!boolDate)
+                {
+                    Console.WriteLine("Vänligen skriv datumet i format visat ovanför");
+                }
+                else if (serviceDate < DateTime.Now)
+                {
+                    Console.WriteLine("Vänligen skriv ett datum i framtiden.");
+                }
+
+            } while (!boolDate && serviceDate > DateTime.Now);
+
+            return serviceDate;
+        }
+        
+        static DateTime CollectTime(ref DateTime serviceTime, ref DateTime serviceDate)
+        {
+            bool boolTime;
+            do
+            {
+                Console.WriteLine("ange tiden för bokning:\n" +
+                "(\"15:00\")");
+                boolTime = DateTime.TryParse(Console.ReadLine(), out serviceTime);
+
+                DateTime rounded = new DateTime(serviceDate.Year, serviceDate.Month, serviceDate.Day, serviceTime.Hour, 00, 00);
 
 
-            Console.WriteLine("Välj tjänst:\n" +
-                "1. Däckbyte\n" +
-                "2. Däckförvaring\n" +
-                "3. Hjulinställning");
-            int serviceType = int.Parse(Console.ReadLine());
+                if (!boolTime)
+                {
+                    Console.WriteLine("Ange tid i rätt format!");
+                }
+                else if (serviceTime.Minute != 00)
+                {
 
-            Console.WriteLine("ange tiden för bokning:");
-             DateTime hour = DateTime.Parse(Console.ReadLine());
-
-
-            Console.WriteLine("Ange datum för bokning (mm-dd):");
-            DateTime serviceDate = DateTime.Parse(Console.ReadLine());
-
-            DateTime bookingDateTime = serviceDate.Date + hour.TimeOfDay;
-
-            //skapar en ny bokning
-            ServiceBooking newBooking = new ServiceBooking(serviceType, serviceDate, regNr, firstName + " " + lastName);
-            Bookings.Add(newBooking.ToString());
-            Console.WriteLine("Bokning skapad:\n" + newBooking.ToString());
+                    Console.WriteLine("vi kan bara boka tider hela timmar, ska vi boka in dig {0}?  (Y/N):", rounded.ToString("yyyy MMMM dd - HH:mm"));
+                    while (true)
+                    {
+                        string userInput = Console.ReadLine();
+                        if (userInput.Trim().ToLower() == "y")
+                        {
+                            serviceTime = rounded;
+                            break;
+                        }
+                        else if (userInput.Trim().ToLower() == "n")
+                        {
+                            Console.WriteLine("okej, välj en ny tid din krånglige fan");
+                            boolTime = false;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("please write Y or N");
+                        }
+                    }
+                }
+                else if (serviceTime < DateTime.Now)
+                {
+                    Console.WriteLine("du kan inte boka bakåt i tiden");
+                }
+            } while (!boolTime);
+            return serviceTime;
         }
     }
 
