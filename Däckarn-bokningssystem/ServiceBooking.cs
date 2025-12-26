@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,11 +11,11 @@ namespace Däckarn_bokningssystem
     {
         public string CustomerName { get; set; }
         public string RegNr { get; set; }
-        public int ServiceType { get; set; }
+        public ServiceType ServiceType { get; set; }
         public DateTime ServiceTime { get; set; }
     
 
-        public ServiceBooking (string customerName, string regNr, int serviceType, DateTime serviceTime)
+        public ServiceBooking (string customerName, string regNr, ServiceType serviceType, DateTime serviceTime)
         {
             CustomerName = customerName;
             RegNr = regNr;

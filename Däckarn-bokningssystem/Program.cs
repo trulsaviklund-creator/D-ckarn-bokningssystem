@@ -1,13 +1,35 @@
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace Däckarn_bokningssystem
 {
     internal class Program
     {
-        static List<string> Bookings = new List<string>();
+        static List<ServiceBooking> Bookings = new List<ServiceBooking>();
         static void Main(string[] args)
         {
-            //välkomst meny
+
+            ServiceBooking newBooking = new ServiceBooking("Sebastian Kirjonen", "GLY342", ServiceType.MotorService, new DateTime(2026, 2, 15, 15, 00, 00));
+            Bookings.Add(newBooking);
+            newBooking = new ServiceBooking("Trulsa Viklund", "FWF18N", ServiceType.Dackbyte, new DateTime(2026, 2, 15, 13, 00, 00));
+            Bookings.Add(newBooking);
+            newBooking = new ServiceBooking("Victoria Sjöberg", "LMD293", ServiceType.Hjulbalansering, new DateTime(2026, 2, 15, 11, 00, 00));
+            Bookings.Add(newBooking);
+
+            /*
+             * 
+             * hård kodade tider^^
+             * 
+             * 
+             */
+
+            StartMenu();
+           
+
+        } //end of main
+
+        static void StartMenu()
+        {
             Console.WriteLine("Välkommen till Däckarns!\n" +
                 "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
 
@@ -15,31 +37,36 @@ namespace Däckarn_bokningssystem
             Console.WriteLine("1. Logga in som administratör\n" +
                 "2. Logga in som kund\n" +
                 "3. Avsluta programmet");
-
-
-            if (int.TryParse(Console.ReadLine(), out int userInput))
+            while (true)
             {
-                switch (userInput)
+                if (int.TryParse(Console.ReadLine(), out int userInput))
                 {
-                    case 1: //admin
-                        Console.WriteLine("Vänligen ange ditt lösenord (Admin)\n" + //skriver ut lösenordet i programmet för enkelhetens skull, vid riktigt program bör detta inte göras.
-                        "skriv \"AVBRYT\" för att gå tillbaka");
+                    switch (userInput)
+                    {
+                        case 1: //admin
+                            Console.WriteLine("Vänligen ange ditt lösenord (Admin)\n" + //skriver ut lösenordet i programmet för enkelhetens skull, vid riktigt program bör detta inte göras.
+                            "skriv \"AVBRYT\" för att gå tillbaka");
 
-                        while (true)
-                        {
-                            string passwordInput = Console.ReadLine();
-                            if(passwordInput == "Admin")
+                            while (true)
                             {
-                                break;
+                                string passwordInput = Console.ReadLine();
+                                if (passwordInput == "Admin")
+                                {
+                                    break;
+                                }
+                                else if (passwordInput == "AVBRYT")
+                                {
+                                    Console.Clear();
+                                    StartMenu();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("felaktigt lösenord, försök igen");
+                                }
                             }
-                            else
-                            {
-                                Console.WriteLine("felaktigt lösenord, försök igen");
-                            }
-                        }
                             AdminMenu();
 
-                        break;
+                            break;
 
                         case 2: //user
                             UserMenu();
@@ -50,126 +77,151 @@ namespace Däckarn_bokningssystem
                             break;
                     }
                 }
-                else
+                else//om ogiltigt användar input
                 {
                     Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 2");
-                    return;
-                }
-           
-
-        } //end of main
-
-        static void AdminMenu()
-        {
-         
-            Console.Clear();
-            Console.WriteLine("~~ Administratörsmenyn - Däckarns ~~\n" +
-            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
-
-            Console.WriteLine("-------------------------------");
-            Console.WriteLine("1. Visa alla bokningar\n" +
-                "2. Lägg till en bokning\n" +
-                "3. Visa dagens bokningar\n" +
-                "4. visa lediga tider\n" +
-                "5. Ta bort en bokning\n" +
-                "6. Logga ut\n\n" +
-                "7. Exit program\n");
-
-            int userInput;
-            while (true)
-            {
-                if (!int.TryParse(Console.ReadLine(), out userInput))
-                {
-                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 7");
                     continue;
                 }
-                break;
             }
+            
+        }
 
+        static void AdminMenu() //meny alternativ för admin
+        {
+            while (true)
+            { 
+                Console.WriteLine("~~ Administratörsmenyn - Däckarns ~~\n" +
+                "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
 
-            switch (userInput)
-            {
-                case 1: //skriv ut alla bokningar
-                    foreach (var booking in Bookings)
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine("1. Visa alla bokningar\n" +
+                    "2. Lägg till en bokning\n" +
+                    "3. Visa dagens bokningar\n" +
+                    "4. visa lediga tider\n" +
+                    "5. Ta bort en bokning\n" +
+                    "6. Logga ut\n\n" +
+                    "7. Exit program\n");
+
+                int userInput;
+                while (true)
+                {
+                    if (!int.TryParse(Console.ReadLine(), out userInput))
                     {
-                        Console.WriteLine("booking");
+                        Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 7");
+                        continue;
                     }
                     break;
+                }
 
-                case 2: //lägg till bokning (boka tid)
-                    Console.Clear();
-                    Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
 
-                    BookTime();
-                    break;
-                case 3: //visa dagens bokningar
-                    break;
-                case 4: //visa lediga tider
-                    PrintContactInfo();
-                    break;
-                case 5: //logga ut
-                    break;
-                case 6: //stäng ner programmet
-                    Environment.Exit(0);
-                    break;
+                switch (userInput)
+                {
+                    case 1: //skriv ut alla bokningar
+                        PrintBookedTimes();
+                        break;
+
+                    case 2: //lägg till bokning (boka tid)
+                        Console.Clear();
+                        Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+
+                        BookTime();
+                        break;
+                    case 3: //visa dagens bokningar
+                        break;
+                    case 4: //visa lediga tider
+                        PrintContactInfo();
+                        break;
+                    case 5: //ta bort en bokning
+                        break;
+                    case 6: //logga ut
+                        Console.Clear();
+                        StartMenu();
+                        break;
+                    case 7: //stäng ner programmet
+                        Environment.Exit(0);
+                        break;
+                }
             }
         }
 
-        static void UserMenu()
+        static void UserMenu() //menyalternativ för kund
         {
-            Console.Clear();
-            Console.WriteLine("~~ Välkommen till Däckarns ~~\n" +
-            "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
-
-            Console.WriteLine("-------------------------------");
-            Console.WriteLine("1. Boka tid\n" +
-                "2. Mina bokade tider\n" +
-                "3. Avboka tid\n" +
-                "4. Kontakt uppgifter\n" +
-                "5. Logga ut\n\n" +
-                "6. Exit program\n");
-            int userInput;
             while (true)
             {
-                if (!int.TryParse(Console.ReadLine(), out userInput))
+                Console.WriteLine("~~ Välkommen till Däckarns ~~\n" +
+                "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
+
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine("1. Boka tid\n" +
+                    "2. Mina bokade tider\n" +
+                    "3. Avboka tid\n" +
+                    "4. Kontakt uppgifter\n" +
+                    "5. Logga ut\n\n" +
+                    "6. Exit program\n");
+                int userInput;
+                while (true)
                 {
-                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 6");
-                    continue;
+                    if (!int.TryParse(Console.ReadLine(), out userInput))
+                    {
+                        Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 6");
+                        continue;
+                    }
+                    break;
                 }
-                break;
-            }
 
-            switch (userInput)
-            {
-                case 1: //boka tid
-                    Console.Clear();
-                    Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+                switch (userInput)
+                {
+                    case 1: //boka tid
+                        Console.Clear();
+                        Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
 
-                    BookTime();
+                        BookTime();
 
-                    break;
-                case 2: //visa användarens bokade tider
-                    break;
-                case 3: //avboka tid
-                    break;
-                case 4: //skriva ut kontaktuppgifter
-                    PrintContactInfo();
-                    break;
-                case 5: //logga ut
-                    break;
-                case 6: //stäng ner programmet
-                    break;
+                        break;
+                    case 2: //visa användarens bokade tider
+                        Console.Clear();
+                        PrintBookedTimes();
+                        break;
+                    case 3: //avboka tid
+                        break;
+                    case 4: //skriva ut kontaktuppgifter
+                        Console.Clear();
+                        PrintContactInfo();
+                        Console.WriteLine("\n");
+
+                        break;
+
+                    case 5: //logga ut
+                        Console.Clear();
+                        StartMenu();
+                        break;
+                    case 6: //stäng ner programmet
+                        Environment.Exit(0);
+                        break;
+                }
             }
         }
 
-        static void PrintContactInfo()
+        static void PrintBookedTimes() //metod för att loopa genom alla bokningar i databasen
+        {
+            Console.Clear();
+            int i = 0;
+            foreach (var booking in Bookings)
+            {
+                i++;
+                Console.WriteLine("bokning:" + i);
+                Console.WriteLine(booking.ToString());
+                Console.WriteLine("\n");
+            }
+        }
+        static void PrintContactInfo() //metod som skriver ut kontaktuppgifter till kunden
         {
             Console.WriteLine("Däckarns AB\n" +
                 "Telefon: 08-123 456 78\n" +
                 "Email: Däckarns@info.se");
         }
 
-        static void BookTime() //metod för att boka en tjänst
+        static void BookTime() //funktion för att boka en tjänst
         {
 
             //skriva in boknings namn
@@ -183,8 +235,8 @@ namespace Däckarn_bokningssystem
 
 
             //väljer service typ
-            int serviceTypeNum = 0;
-            ChooseServiceType(ref serviceTypeNum);
+            ServiceType serviceType = new ServiceType();
+            serviceType = (ServiceType)ChooseServiceType();
 
             //välja datum
             DateTime serviceDate = DateTime.Now;
@@ -197,13 +249,34 @@ namespace Däckarn_bokningssystem
 
 
             //skapar ett nytt boknings objekt
-            ServiceBooking newBooking = new ServiceBooking(firstName + " " + lastName, regNr, serviceTypeNum, serviceTime);
-            Bookings.Add(newBooking.ToString()); //lägger in den i listan med bokningar
+            ServiceBooking newBooking = new ServiceBooking(firstName + " " + lastName, regNr, serviceType, serviceTime);
+            Bookings.Add(newBooking); //lägger in den i listan med bokningar
+            Console.Clear();
             Console.WriteLine("Bokning skapad:\n" + newBooking.ToString()); //boknings bekräftelse till användaren
         }
 
+        static bool IsBooked(DateTime serviceTime) //metod för att kolla om en tid redan är bokad.
+        {
+            bool isBooked = true; //default värde är att tiden är bokad.
+            int i = 0;
 
-        static void CollectName(ref string firstName, ref string lastName)
+            foreach(var booking in Bookings)
+            {
+                if (booking.ServiceTime == serviceTime)
+                {
+                    i++;
+                }
+            }
+
+            if(i == 0)
+            {
+                isBooked = false;
+            }
+
+                return isBooked;
+        }
+
+        static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
         {
             Console.WriteLine("Ange Förnamn:");
             firstName = Console.ReadLine();
@@ -212,39 +285,39 @@ namespace Däckarn_bokningssystem
             lastName = Console.ReadLine();
         }
 
-        static void CollectPlate(ref string regNr)
+        static void CollectPlate(ref string regNr)//metod som hämtar registrerings nummer inför bokning
         {
 
             Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
             regNr = Console.ReadLine();
         }
 
-        static int ChooseServiceType(ref int serviceTypeNum)
+        static int ChooseServiceType() //metod som tar emot kundens val av tjänst.
         {
+            ServiceType serviceType = new ServiceType();
+
             Console.WriteLine("\nVälj tjänst:\n" +
             "1. Däckbyte\n" +
             "2. Däckförvaring\n" +
-            "3. Hjulinställning");
+            "3. Hjulinställning\n" +
+            "4. Motor service\n" +
+            "5. plåt knackning");
 
             while (true)
             {
-                bool serviceType = int.TryParse(Console.ReadLine(), out serviceTypeNum);
-
-                if (serviceType && serviceTypeNum < 4 && serviceTypeNum > 0)
+                if(!int.TryParse(Console.ReadLine(), out int serviceTypeInput))
                 {
-                    break;
+                    Console.WriteLine("felaktig input, försök igen");
+                    continue;
                 }
-                else
-                {
-                    Console.WriteLine("skriv 1, 2 eller 3.");
-                }
+                break;
             }
 
-            return serviceTypeNum;
+            return (int)serviceType;
         }
 
 
-        static DateTime CollectDate(ref DateTime serviceDate)
+        static DateTime CollectDate(ref DateTime serviceDate) //metod som hämtar kundens val av datum.
         {
             bool boolDate;
             do
@@ -268,7 +341,7 @@ namespace Däckarn_bokningssystem
         }
 
         
-        static DateTime CollectTime(ref DateTime serviceTime, ref DateTime serviceDate)
+        static DateTime CollectTime(ref DateTime serviceTime, ref DateTime serviceDate)//metod som hämtar kundens val av tid, och samlar dem till ett datum.
         {
             bool boolTime;
             do
@@ -299,12 +372,12 @@ namespace Däckarn_bokningssystem
                         {
                             Console.WriteLine("okej, välj en ny tid din krånglige fan");
                             boolTime = false;
-                            break;
                         }
                         else
                         {
                             Console.WriteLine("please write Y or N");
                         }
+
                     }
                 }
                 else if (serviceTime < DateTime.Now)
@@ -312,6 +385,18 @@ namespace Däckarn_bokningssystem
                     Console.WriteLine("du kan inte boka bakåt i tiden");
                     boolTime = false;
                 }
+                else
+                {
+                    serviceTime = rounded;
+
+                }
+
+                if (IsBooked(serviceTime))
+                {
+                    Console.WriteLine(serviceTime + "är redan bokad, var god välj en annan tid");
+                    boolTime = false;
+                }
+
             } while (!boolTime);
             return serviceTime;
         }
