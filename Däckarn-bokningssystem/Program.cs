@@ -474,7 +474,7 @@ namespace Däckarn_bokningssystem
             return serviceTime;
         }
 
-        static void PrintBookingsToday()
+        static void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
         {
             foreach(var booking in Bookings)
             {
@@ -485,37 +485,41 @@ namespace Däckarn_bokningssystem
             }
         }
 
-        static void ListAvailableTimes() 
+        static void ListAvailableTimes() //skriver ut alla tider lediga på en specifik dag.
         {
             //tar in användarvärde i datum
             DateTime dateInput = new DateTime(); 
             string userInput = Console.ReadLine();
 
-            if(DateTime.TryParse(userInput, out dateInput))
+            if(DateTime.TryParse(userInput, out dateInput)) //försöker göra den till en datetime-värdetyp.
             {
-                DateTime start = new DateTime(dateInput.Year, dateInput.Month, dateInput.Day, 7, 0, 0); //dagens starttid
+                DateTime start = new DateTime(dateInput.Year, dateInput.Month, dateInput.Day, 7, 0, 0); //arbetsdagens starttid
 
                 Console.WriteLine("lediga tider för {0}", dateInput.Date);
 
-                bool isOccupied = false;
 
+                //loopar igenom dagens timmar för att se vilka tider som är lediga.
                 for (int counter = 0; counter < 9; counter++)
                 {
-                    DateTime timeToCheck = start.AddHours(counter);
+                    bool isOccupied = false;
+                    DateTime timeToCheck = start.AddHours(counter); //gör en off-set på vilken tid den ska kolla
 
-                    foreach (var booking in Bookings)
+                    foreach (var booking in Bookings) //loopar genom listan med bokningar för att se om någon har den tiden
                     {
                         if (booking.ServiceTime == timeToCheck)
                         {
                             isOccupied = true;
-                            break;
+                            continue;
                         }
                     }
 
 
-                    if (!isOccupied)
+                    if (!isOccupied) //finns tiden med i listan så är den ledig, och skrivs då ut i konsollen.
                     {
-                        Console.WriteLine(timeToCheck.ToString("HH:mm") + " - ledig");
+                        Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Ledig");
+                    } else if (isOccupied) //är tiden bokad så körs detta.
+                    {
+                        Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Bokad");
                     }
                 }
             }
