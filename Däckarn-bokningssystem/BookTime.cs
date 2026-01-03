@@ -5,11 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Däckarn_bokningssystem;
-public enum ServiceType
+internal class BookTime
 {
-    Däckbyte,
-    Hjulbalansering,
-    Däckförvaring,
-    MotorService,
-    PlåtKnackning
+
 }
