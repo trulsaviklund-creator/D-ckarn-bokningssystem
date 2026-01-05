@@ -30,7 +30,7 @@ namespace Däckarn_bokningssystem
              */
 
             StartMenu();
-           
+
 
         } //end of main
 
@@ -92,13 +92,13 @@ namespace Däckarn_bokningssystem
                 }
             }
 
-            
+
         }
 
         static void AdminMenu() //meny alternativ för admin
         {
             while (true)
-            { 
+            {
                 Console.WriteLine("~~ Administratörsmenyn - Däckarns ~~\n" +
                 "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda alternativet");
 
@@ -319,7 +319,7 @@ namespace Däckarn_bokningssystem
             bool isBooked = true; //default värde är att tiden är bokad.
             int i = 0;
 
-            foreach(var booking in Bookings)
+            foreach (var booking in Bookings)
             {
                 if (booking.ServiceTime == serviceTime)
                 {
@@ -327,23 +327,23 @@ namespace Däckarn_bokningssystem
                 }
             }
 
-            if(i == 0)
+            if (i == 0)
             {
                 isBooked = false;
             }
 
-                return isBooked;
+            return isBooked;
         }
 
         static bool IsBussinessHours(DateTime serviceTime)
         {
             bool isBussinessHours = true;
 
-            DateTime start = new DateTime(serviceTime.Year,serviceTime.Month,serviceTime.Day,07, 00, 00);
-            DateTime end = new DateTime(serviceTime.Year,serviceTime.Month,serviceTime.Day,15, 00, 00);
+            DateTime start = new DateTime(serviceTime.Year, serviceTime.Month, serviceTime.Day, 07, 00, 00);
+            DateTime end = new DateTime(serviceTime.Year, serviceTime.Month, serviceTime.Day, 15, 00, 00);
 
 
-            if(serviceTime >= start && serviceTime <= end)
+            if (serviceTime >= start && serviceTime <= end)
             {
                 isBussinessHours = false;
             }
@@ -364,7 +364,51 @@ namespace Däckarn_bokningssystem
         {
 
             Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
-            regNr = Console.ReadLine().ToUpper();
+            regNr = Console.ReadLine();
+        }
+
+        static int ChooseServiceType() //metod som tar emot kundens val av tjänst.
+        {
+            ServiceType serviceType = new ServiceType();
+
+            Console.WriteLine("\nVälj tjänst:\n" +
+            "1. Däckbyte\n" +
+            "2. Däckförvaring\n" +
+            "3. Hjulinställning\n" +
+            "4. Motorservice\n" +
+            "5. Plåtknackning");
+
+            while (true)
+            {
+                if (int.TryParse(Console.ReadLine(), out int serviceTypeInput))
+                {
+                    if (serviceTypeInput >= 1 && serviceTypeInput <= 5)
+                    {
+                        switch (serviceTypeInput)
+                        {
+                            case 1:
+                                serviceType = ServiceType.Däckbyte;
+                                break;
+                            case 2:
+                                serviceType = ServiceType.Däckförvaring;
+                                break;
+                            case 3:
+                                serviceType = ServiceType.Hjulbalansering;
+                                break;
+                            case 4:
+                                serviceType = ServiceType.MotorService;
+                                break;
+                            case 5:
+                                serviceType = ServiceType.PlåtKnackning;
+                                break;
+
+                        }
+                        break;
+                    }
+                }
+                Console.WriteLine("Felaktig input, försök igen");
+            }
+            return (int)serviceType;
         }
 
         static DateTime CollectDate(ref DateTime serviceDate) //metod som hämtar kundens val av datum.
@@ -382,7 +426,7 @@ namespace Däckarn_bokningssystem
                 {
                     Console.WriteLine("Vänligen skriv datumet i format visat ovanför");
                 }
-                else if (serviceDate <= DateTime.Now.Date)
+                else if (serviceDate < DateTime.Now)
                 {
                     Console.WriteLine("Vänligen skriv ett datum i framtiden.");
                 }
@@ -397,7 +441,7 @@ namespace Däckarn_bokningssystem
             bool boolTime;
             do
             {
-                Console.WriteLine("\nAnge start tiden för bokning:\n(Öppettider: 07:00-15:00)");
+                Console.WriteLine("\nAnge start-tiden för bokning:\n(Öppettider: 07:00-15:00)");
                 boolTime = DateTime.TryParse(Console.ReadLine(), out serviceTime);
 
                 DateTime rounded = new DateTime(serviceDate.Year, serviceDate.Month, serviceDate.Day, serviceTime.Hour, 00, 00);
@@ -432,7 +476,7 @@ namespace Däckarn_bokningssystem
                         }
                         else
                         {
-                            Console.WriteLine("Skriv Ja eller Nej");
+                            Console.WriteLine("Vänligen svara endast Ja eller Nej");
                         }
 
                     }
