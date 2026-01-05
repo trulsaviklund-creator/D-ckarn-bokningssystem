@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Däckarn_bokningssystem;
 public enum ServiceType
 {
-    Dackbyte,
+    Däckbyte,
     Hjulbalansering,
-    Dackförvaring,
+    Däckförvaring,
     MotorService,
-    PlatKnackning
+    PlåtKnackning
 }
