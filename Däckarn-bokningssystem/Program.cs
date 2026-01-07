@@ -15,11 +15,7 @@ namespace Däckarn_bokningssystem
             Bookings.Add(newBooking);
             newBooking = new ServiceBooking("Trulsa Viklund", "FWF18N", ServiceType.Däckbyte, new DateTime(2026, 2, 15, 13, 00, 00));
             Bookings.Add(newBooking);
-            newBooking = new ServiceBooking("Victoria Sjöberg", "LMD293", ServiceType.Hjulbalansering, new DateTime(2026, 2, 15, 11, 00, 00));
-            Bookings.Add(newBooking);
-            newBooking = new ServiceBooking("1", "GGG555", ServiceType.Hjulbalansering, new DateTime(2026, 1, 2, 11, 00, 00));
-            Bookings.Add(newBooking);
-            newBooking = new ServiceBooking("2", "DDD222", ServiceType.Hjulbalansering, new DateTime(2026, 1, 2, 15, 00, 00));
+            newBooking = new ServiceBooking("Göran Göransson", "OLW08N", ServiceType.Hjulbalansering, new DateTime(2026, 2, 15, 11, 00, 00));
             Bookings.Add(newBooking);
 
             /*
@@ -266,6 +262,7 @@ namespace Däckarn_bokningssystem
             }
             Console.WriteLine();
         }
+
         static void RemoveTime()
         {
             bool isBooked = false;
@@ -504,50 +501,6 @@ namespace Däckarn_bokningssystem
             return serviceTime;
         }
 
-        static int ChooseServiceType() //metod som tar emot kundens val av tjänst.
-        {
-            ServiceType serviceType = new ServiceType();
-
-
-            Console.WriteLine("\nVälj tjänst:\n" +
-            "1. Däckbyte\n" +
-            "2. Däckförvaring\n" +
-            "3. Hjulinställning\n" +
-            "4. Motorservice\n" +
-            "5. Plåtknackning");
-
-            while (true)
-            {
-                if (int.TryParse(Console.ReadLine(), out int serviceTypeInput))
-                {
-                    switch (serviceTypeInput)
-                    {
-                        case 1:
-                            serviceType = ServiceType.Däckbyte;
-                            break;
-                        case 2:
-                            serviceType = ServiceType.Däckförvaring;
-                            break;
-                        case 3:
-                            serviceType = ServiceType.Hjulbalansering;
-                            break;
-                        case 4:
-                            serviceType = ServiceType.MotorService;
-                            break;
-                        case 5:
-                            serviceType = ServiceType.PlåtKnackning;
-                            break;
-
-                    }
-                    break;
-                }
-                //om värdet inte är en siffra.
-                Console.WriteLine("Felaktig input, försök igen");
-            }
-
-            return (int)serviceType;
-        }
-
         static void PrintBookedTimes() //metod för att loopa genom alla bokningar i databasen
         {
             Console.Clear();
@@ -558,6 +511,7 @@ namespace Däckarn_bokningssystem
             }
             Console.WriteLine("");
         }
+
         static void PrintCustomerTimes()
         {
             bool isBooked = false;
@@ -600,6 +554,7 @@ namespace Däckarn_bokningssystem
                 "Email: Däckarns@info.se\n" +
                 "Adress: Ryckepungsvägen 1, Falun");
         }
+
         static void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
         {
             foreach(var booking in Bookings)
@@ -613,42 +568,73 @@ namespace Däckarn_bokningssystem
 
         static void ListAvailableTimes() //skriver ut alla tider lediga på en specifik dag.
         {
-            //tar in användarvärde i datum
-            DateTime dateInput = new DateTime(); 
-            string userInput = Console.ReadLine();
+            Console.Clear();
+            bool listingTimes = true;
 
-            if(DateTime.TryParse(userInput, out dateInput)) //försöker göra den till en datetime-värdetyp.
+            while (listingTimes)
             {
-                DateTime start = new DateTime(dateInput.Year, dateInput.Month, dateInput.Day, 7, 0, 0); //arbetsdagens starttid
 
-                Console.WriteLine("lediga tider för {0}", dateInput.Date);
+                Console.WriteLine("skriv in datumet du vill se från:\n(\"åååå-mm-dd\")");
+                //tar in användarvärde i datum
+                DateTime firstDateInput = new DateTime();
+                string firstDateUserInput = Console.ReadLine();
+                Console.WriteLine("skriv in datumet du vill se till:\n(\"åååå-mm-dd\")");
 
+                DateTime secondDateInput = new DateTime();
+                string secondDateUserInput = Console.ReadLine();
 
-                //loopar igenom dagens timmar för att se vilka tider som är lediga.
-                for (int counter = 0; counter < 9; counter++)
+                if (DateTime.TryParse(firstDateUserInput, out firstDateInput) && DateTime.TryParse(secondDateUserInput, out secondDateInput)) //försöker göra den till en datetime-värdetyp.
                 {
-                    bool isOccupied = false;
-                    DateTime timeToCheck = start.AddHours(counter); //gör en off-set på vilken tid den ska kolla
 
-                    foreach (var booking in Bookings) //loopar genom listan med bokningar för att se om någon har den tiden
+                    DateTime start = new DateTime(firstDateInput.Year, firstDateInput.Month, firstDateInput.Day, 7, 0, 0); //arbetsdagens start/slut tid, för att kunna ha varierande arbetstider på helgdagar osv.
+                    DateTime end = new DateTime(firstDateInput.Year, firstDateInput.Month, firstDateInput.Day, 16, 0, 0); 
+                    TimeSpan hoursTimeSpan = end - start; //räknar ut tids skillnaden
+
+                    TimeSpan dateTimeSpan = secondDateInput.Date - firstDateInput.Date; //räknar ut datums skillnaden mellan de två datumen anvnändaren skrev in.
+
+
+                    Console.Clear();
+
+                    for (int dayCounter = 0; dayCounter < dateTimeSpan.Days + 1; dayCounter++) //loopar genom dagarna, just nu är det bara en dag som kollar.
                     {
-                        if (booking.ServiceTime == timeToCheck)
+
+                        if (dayCounter > 0) start = start.AddDays(1); //lägger till en dag på datumet man kollar på om det är fler än 2 dagar.
+
+                        Console.WriteLine("\nlediga tider för {0}:", start.ToString("d"));
+
+                        //loopar igenom dagens timmar för att se vilka tider som är lediga.
+                        for (int counter = 0; counter < hoursTimeSpan.Hours; counter++)
                         {
-                            isOccupied = true;
-                            continue;
+                            bool isOccupied = false;
+                            DateTime timeToCheck = start.AddHours(counter); //gör en off-set på vilken tid den ska kolla
+
+                            foreach (var booking in Bookings) //loopar genom listan med bokningar för att se om någon har den tiden
+                            {
+                                if (booking.ServiceTime == timeToCheck)
+                                {
+                                    isOccupied = true;
+                                    continue;
+                                }
+                            }
+
+
+                            if (!isOccupied) //finns tiden med i listan så är den ledig, och skrivs då ut i konsollen.
+                            {
+                                Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Ledig");
+                            }
+                            else if (isOccupied) //är tiden bokad så körs detta.
+                            {
+                                Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Bokad");
+                            }
+
                         }
-                    }
 
-
-                    if (!isOccupied) //finns tiden med i listan så är den ledig, och skrivs då ut i konsollen.
-                    {
-                        Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Ledig");
-                    } else if (isOccupied) //är tiden bokad så körs detta.
-                    {
-                        Console.WriteLine(timeToCheck.ToString("HH:mm") + " - Bokad");
                     }
+                    Console.WriteLine(); //gör blank rad innan menyalternativen skrivs ut.
+                    listingTimes = false; //avslutar while loopen
                 }
             }
+            
         }
 
     }
