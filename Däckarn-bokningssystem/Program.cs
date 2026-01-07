@@ -309,7 +309,7 @@ namespace Däckarn_bokningssystem
             }
 
 
-        }
+        } //funktion som tar bort en bokad tid
 
         static bool IsBooked(DateTime serviceTime) //metod för att kolla om en tid redan är bokad.
         {
@@ -346,7 +346,7 @@ namespace Däckarn_bokningssystem
             }
 
             return isBussinessHours;
-        }
+        } //metod som kollar om en tid är i arbetstimmar
 
         static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
         {
@@ -573,10 +573,11 @@ namespace Däckarn_bokningssystem
 
             while (listingTimes)
             {
+                //tar in användarvärde i datum
 
                 Console.WriteLine("skriv in datumet du vill se från:\n(\"åååå-mm-dd\")");
-                //tar in användarvärde i datum
                 DateTime firstDateInput = new DateTime();
+
                 string firstDateUserInput = Console.ReadLine();
                 Console.WriteLine("skriv in datumet du vill se till:\n(\"åååå-mm-dd\")");
 
@@ -631,7 +632,7 @@ namespace Däckarn_bokningssystem
 
                     }
                     Console.WriteLine(); //gör blank rad innan menyalternativen skrivs ut.
-                    listingTimes = false; //avslutar while loopen
+                    listingTimes = false; //avslutar while loopen efter all utskrift är klar.
                 }
             }
             
