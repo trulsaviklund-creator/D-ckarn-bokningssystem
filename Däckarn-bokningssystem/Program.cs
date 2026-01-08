@@ -29,7 +29,6 @@ namespace Däckarn_bokningssystem
 
 
         } //end of main
-
         static public void PrintContactInfo() //metod som skriver ut kontaktuppgifter till kunden
         {
             Console.WriteLine("Däckarns AB\n" +
@@ -37,5 +36,6 @@ namespace Däckarn_bokningssystem
                 "Email: Däckarns@info.se\n" +
                 "Adress: Ryckepungsvägen 1, Falun");
         }
+
     }
 }

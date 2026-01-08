@@ -62,6 +62,188 @@ internal class BookingLogic
         }
         Console.WriteLine();
     }
+    
+    static public void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
+    {
+        bool validName = false;
+        while (!validName)
+        {
+
+            Console.WriteLine("Ange Förnamn:");
+            firstName = Console.ReadLine();
+
+            Console.WriteLine("\nAnge Efternamn:");
+            lastName = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+            {
+                Console.WriteLine("Vänligen ange ett giltigt för- och efternamn.\n");
+                continue;
+            }
+            else if (firstName.Any(char.IsDigit) || lastName.Any(char.IsDigit))
+            {
+                Console.WriteLine("Namn kan inte innehålla siffror, försök igen.\n");
+                continue;
+            }
+
+            validName = true;
+        }
+    }
+
+    static public void CollectPlate(ref string regNr)//metod som hämtar registrerings nummer inför bokning
+    {
+
+        Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
+        while (true)
+        {
+            regNr = Console.ReadLine();
+
+            if (regNr.Length > 7 || regNr.Length < 2)
+            {
+                Console.WriteLine("Registreringsnummret måste vara mellan 2 och 7 symboler");
+                continue;
+            }
+
+            break;
+
+        }
+    }
+
+    static public int ChooseServiceType() //metod som tar emot kundens val av tjänst.
+    {
+        ServiceType serviceType = new ServiceType();
+
+        Console.WriteLine("\nVälj tjänst:\n" +
+        "1. Däckbyte\n" +
+        "2. Däckförvaring\n" +
+        "3. Hjulinställning\n" +
+        "4. Motorservice\n" +
+        "5. Plåtknackning");
+
+        while (true)
+        {
+            if (int.TryParse(Console.ReadLine(), out int serviceTypeInput))
+            {
+                if (serviceTypeInput >= 1 && serviceTypeInput <= 5)
+                {
+                    switch (serviceTypeInput)
+                    {
+                        case 1:
+                            serviceType = ServiceType.Däckbyte;
+                            break;
+                        case 2:
+                            serviceType = ServiceType.Däckförvaring;
+                            break;
+                        case 3:
+                            serviceType = ServiceType.Hjulbalansering;
+                            break;
+                        case 4:
+                            serviceType = ServiceType.MotorService;
+                            break;
+                        case 5:
+                            serviceType = ServiceType.PlåtKnackning;
+                            break;
+
+                    }
+                    break;
+                }
+            }
+            Console.WriteLine("Felaktig input, försök igen");
+        }
+        return (int)serviceType;
+    }
+
+    static public DateTime CollectDate(ref DateTime serviceDate) //metod som hämtar kundens val av datum.
+    {
+        Console.WriteLine("\nVilken dag vill du boka?" +
+            "\n(\"åååå-mm-dd\")");
+
+        bool boolDate = false;
+        while (!boolDate || serviceDate < DateTime.Now)
+        {
+            ;
+            boolDate = DateTime.TryParse(Console.ReadLine(), out serviceDate);
+
+            if (!boolDate)
+            {
+                Console.WriteLine("Vänligen skriv datumet i format visat ovanför");
+            }
+            else if (serviceDate < DateTime.Now)
+            {
+                Console.WriteLine("Vänligen skriv ett datum i framtiden.");
+            }
+
+        }
+
+        return serviceDate;
+    }
+
+    static public DateTime CollectTime(ref DateTime serviceTime, ref DateTime serviceDate)//metod som hämtar kundens val av tid, och samlar dem till ett datum.
+    {
+        bool boolTime;
+        do
+        {
+            Console.WriteLine("\nAnge start-tiden för bokning:\n(Öppettider: 07:00-15:00)");
+            boolTime = DateTime.TryParse(Console.ReadLine(), out serviceTime);
+
+            DateTime rounded = new DateTime(serviceDate.Year, serviceDate.Month, serviceDate.Day, serviceTime.Hour, 00, 00);
+
+
+            if (!boolTime)
+            {
+                Console.WriteLine("Ange tid i rätt format!");
+            }
+            else if (ScheduleLogics.IsBussinessHours(serviceTime))
+            {
+                Console.WriteLine("Du kan endast boka tid 07:00-15:00");
+                boolTime = false;
+            }
+            else if (serviceTime.Minute != 0)
+            {
+
+                Console.WriteLine("Vi kan bara boka tider hela timmar, ska vi boka in dig {0}?  (ja/nej):", rounded.ToString("yyyy MMMM dd - HH:mm"));
+                while (true)
+                {
+                    string userInput = Console.ReadLine();
+                    if (userInput.Trim().ToLower() == "ja")
+                    {
+                        serviceTime = rounded;
+                        break;
+                    }
+                    else if (userInput.Trim().ToLower() == "nej")
+                    {
+                        Console.WriteLine("Välj en annan tid:");
+                        boolTime = false;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vänligen svara endast Ja eller Nej");
+                    }
+
+                }
+            }
+            else if (serviceTime < serviceTime.Date) //använder .Date i detta sammahang ifall programmet rättas senare på dagen.. annars bör DateTime.Now användas.
+            {
+                Console.WriteLine("Du kan inte boka bakåt i tiden");
+                boolTime = false;
+            }
+            else
+            {
+                serviceTime = rounded;
+
+            }
+
+
+
+            if (ScheduleLogics.IsTimeBooked(serviceTime))
+            {
+                Console.WriteLine("Tiden är redan bokad, var god välj en annan");
+                boolTime = false;
+            }
+
+        } while (!boolTime);
+        return serviceTime;
+    }
 
     static public void EditBooking() //funktion för att ändra en bokad tid
     {
@@ -105,10 +287,11 @@ internal class BookingLogic
                     }
                 }
                 userInput = Console.ReadLine();
-                selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+                //ServiceBooking selectedBooking = Bookings.FirstOrDefault(b => b.RegNr == userInput);
 
             }
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+
+            ServiceBooking selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
 
             if (selectedBooking == null)
             {

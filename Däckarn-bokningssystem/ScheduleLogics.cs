@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Däckarn_bokningssystem;
 internal class ScheduleLogics
 {
+
     static public void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
     {
         foreach (var booking in Program.Bookings)
