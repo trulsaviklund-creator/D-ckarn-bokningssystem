@@ -79,11 +79,14 @@ namespace Däckarn_bokningssystem
                         case 3:
                             Environment.Exit(0); //avslutar programmet
                             break;
+                        default:
+                            Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 3");
+                            continue;
                     }
                 }
                 else//om ogiltigt användar input
                 {
-                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 2");
+                    Console.WriteLine("Ogiltigt val. Vänligen ange en siffra mellan 1 & 3");
                     continue;
                 }
             }
@@ -102,7 +105,7 @@ namespace Däckarn_bokningssystem
                 Console.WriteLine("1. Visa alla bokningar\n" +
                     "2. Lägg till en bokning\n" +
                     "3. Visa dagens bokningar\n" +
-                    "4. visa lediga tider\n" +
+                    "4. Visa lediga tider\n" +
                     "5. Ändra en bokning\n" +
                     "6. Ta bort en bokning\n" +
                     "7. Logga ut\n\n" +
@@ -247,7 +250,7 @@ namespace Däckarn_bokningssystem
             Console.WriteLine("För att avboka, skriv regnummer till våran mail: Däckarns@info.se\n");
             Console.WriteLine("Bokning skapad:\n{0}\n", newBooking.ToString()); //boknings bekräftelse till användaren
 
-            Console.Write("den temporära kostnaden ligger på:");
+            Console.Write("Den temporära kostnaden ligger på:");
             switch ((int)serviceType)
             {
                 case 0:
@@ -319,14 +322,14 @@ namespace Däckarn_bokningssystem
                 if (selectedBooking == null)
                 {
                     Console.Clear();
-                    Console.WriteLine("vi hittar inte bokningen i detta registrerings nummer, försök igen\n---------------------");
+                    Console.WriteLine("Vi hittar inte bokningen i detta registrerings nummer, försök igen\n---------------------");
                     continue;
                 }
 
 
                 Console.WriteLine("Vad vill du ändra i bokningen:\n" +
-                    "1. tid\n" +
-                    "2. registrerings nummer\n" +
+                    "1. Tid\n" +
+                    "2. Registrerings nummer\n" +
                     "3. Boknings namn\n" +
                     "4. Service typ");
 
@@ -348,35 +351,46 @@ namespace Däckarn_bokningssystem
                             Bookings.Add(newBooking); //lägger in den i listan med bokningar
 
                             Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
+
+                            Console.Clear();
+                            Console.WriteLine("Tiden på bokningen är nu ändrad!\n-------------------------");
                             AdminMenu();
                             break;
 
                         case 2: // ändra regnummer
-                            Console.WriteLine("skriv in nytt registrerings nummer:");
-                            string newRegNr = Console.ReadLine().ToUpper();
+                            CollectPlate(ref userInput);
+                            string newRegNr = userInput;
 
                             newBooking = new ServiceBooking(selectedBooking.CustomerName, newRegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
                             Bookings.Add(newBooking); //lägger in den i listan med bokningar
                             Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
-                            AdminMenu();
 
                             Console.Clear();
-                            Console.WriteLine("Vi hittar ingen bokning med det registrerings numret. försök igen\n----------------------------------");
+                            Console.WriteLine("Registrerings numret är nu ändrad!\n-------------------------");
+                            AdminMenu();
                             break;
 
 
                         case 3: //ändra boknings namn
-                            Console.WriteLine("skriv in nytt namn för bokningen");
-                            string newName = Console.ReadLine();
+
+                            string firstName = "", lastName = "";
+                            CollectName(ref firstName, ref lastName);
+
+                            string newName = firstName + " " + lastName;
                             newBooking = new ServiceBooking(newName, selectedBooking.RegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
+
                             Bookings.Add(newBooking); //lägger in den i listan med bokningar
+                            Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.CustomerName == selectedBooking.CustomerName);
+
+                            Console.Clear();
+                            Console.WriteLine("Namnet på bokningen är nu ändrad!\n-------------------------");
                             AdminMenu();
                             break;
 
                         case 4: //ändra service typ
-                            Console.WriteLine("vilken bokningstyp ska du ha:\n" +
+                            Console.WriteLine("Vilken servicetyp ska du ha:\n" +
                                 "1. Däckbyte\n" +
-                                "2. hjulbalansernig\n" +
+                                "2. Hjulbalansernig\n" +
                                 "3. Däckförvaring\n" +
                                 "4. MotorService\n" +
                                 "5. Plåtknackning");
@@ -418,6 +432,8 @@ namespace Däckarn_bokningssystem
                                         Console.WriteLine("Ett fel uppstod vid borttagning av gammal bokning: " + ex.Message);
                                 }
 
+                                Console.Clear();
+                                Console.WriteLine("Servicetypen är nu ändrad!\n-------------------------");
                                 AdminMenu();
                             }
 
@@ -516,18 +532,46 @@ namespace Däckarn_bokningssystem
 
         static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
         {
-            Console.WriteLine("Ange Förnamn:");
-            firstName = Console.ReadLine();
+            bool validName = false;
+            while (!validName)
+            {
 
-            Console.WriteLine("\nAnge Efternamn:");
-            lastName = Console.ReadLine();
+                Console.WriteLine("Ange Förnamn:");
+                firstName = Console.ReadLine();
+
+                Console.WriteLine("\nAnge Efternamn:");
+                lastName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                {
+                    Console.WriteLine("Vänligen ange ett giltigt för- och efternamn.\n");
+                    continue;
+                } else if (firstName.Any(char.IsDigit) || lastName.Any(char.IsDigit))
+                {
+                    Console.WriteLine("Namn kan inte innehålla siffror, försök igen.\n");
+                    continue;
+                }
+
+                validName = true;
+            }
         }
 
         static void CollectPlate(ref string regNr)//metod som hämtar registrerings nummer inför bokning
         {
 
             Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
-            regNr = Console.ReadLine();
+            while (true)
+            { 
+                regNr = Console.ReadLine();
+
+                if (regNr.Length > 7 || regNr.Length < 2)
+                {
+                    Console.WriteLine("Registreringsnummret måste vara mellan 2 och 7 symboler");
+                    continue;
+                }
+
+                break;
+
+            }
         }
 
         static int ChooseServiceType() //metod som tar emot kundens val av tjänst.
