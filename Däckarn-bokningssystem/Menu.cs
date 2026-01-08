@@ -103,33 +103,48 @@ internal class Menu
             switch (userInput)
             {
                 case 1: //skriv ut alla bokningar
-                    ScheduleLogics.PrintBookedTimes();
-                    break;
 
+                    ScheduleLogics.PrintBookedTimes();
+
+                    break;
                 case 2: //lägg till bokning (boka tid)
+
                     Console.Clear();
                     Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
 
                     BookingLogic.BookTime();
+
                     break;
                 case 3: //visa dagens bokningar
+
                     ScheduleLogics.PrintBookingsToday();
+
                     break;
                 case 4: //visa lediga tider
+
                     ScheduleLogics.ListAvailableTimes();
+
                     break;
                 case 5: //ändra bokning
+
                     BookingLogic.EditBooking();
+
                     break;
                 case 6: //ta bort en bokning
+
                     BookingLogic.RemoveTime();
+
                     break;
                 case 7: //logga ut
+
                     Console.Clear();
                     StartMenu();
+
                     break;
                 case 8: //stäng ner programmet
+
                     Environment.Exit(0);
+
                     break;
 
 
@@ -164,30 +179,35 @@ internal class Menu
             switch (userInput)
             {
                 case 1: //boka tid
+
                     Console.Clear();
                     Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
-
                     BookingLogic.BookTime();
-                    break;
 
+                    break;
                 case 2: //visa användarens bokade tider
+
                     Console.Clear();
                     ScheduleLogics.PrintCustomerTimes();
-                    break;
 
+                    break;
                 case 3: //skriva ut kontaktuppgifter
+
                     Console.Clear();
                     Program.PrintContactInfo();
                     Console.WriteLine();
-                    break;
 
+                    break;
                 case 4: //logga ut
+
                     Console.Clear();
                     StartMenu();
-                    break;
 
+                    break;
                 case 5: //stäng ner programmet
+
                     Environment.Exit(0);
+
                     break;
             }
         }

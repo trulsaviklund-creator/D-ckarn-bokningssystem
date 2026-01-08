@@ -62,7 +62,234 @@ internal class BookingLogic
         }
         Console.WriteLine();
     }
-    
+
+    static public void EditBooking() //funktion för att ändra en bokad tid
+    {
+        ServiceBooking selectedBooking = Program.Bookings.FirstOrDefault();
+        bool isBooked = false;
+
+
+        Console.Clear();
+
+        while (!isBooked)
+        {
+            int i = 0;
+            isBooked = false;
+
+            Console.WriteLine("Skriv in regnummer för bilen på bokningen:\neller skriv \"AVBRYT\" för att avbryta");
+            string userInput = Console.ReadLine().ToUpper();
+            if (userInput == "AVBRYT")
+            {
+                Menu.AdminMenu();
+            }
+
+
+            foreach (var booking in Program.Bookings)
+            {
+                if (booking.RegNr == userInput)
+                {
+                    i++;
+                }
+            }
+
+            if (i > 1)
+            {
+                Console.WriteLine("Vilken bokning vill du ändra på:");
+                foreach (var booking in Program.Bookings)
+                {
+
+                    if (booking.RegNr == userInput)
+                    {
+                        foreach (var b in Program.Bookings) i = 0; i++;
+
+                        Console.WriteLine("{0}. {1}", i, booking.ToString());
+                    }
+                }
+                userInput = Console.ReadLine();
+                selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+
+            }
+
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+
+            if (selectedBooking == null)
+            {
+                Console.Clear();
+                Console.WriteLine("Vi hittar inte bokningen i detta registrerings nummer, försök igen\n---------------------");
+                continue;
+            }
+
+
+            Console.WriteLine("Vad vill du ändra i bokningen:\n" +
+                "1. Tid\n" +
+                "2. Registrerings nummer\n" +
+                "3. Boknings namn\n" +
+                "4. Service typ");
+
+            if (int.TryParse(Console.ReadLine(), out int userChoice))
+            {
+                switch (userChoice)
+                {
+                    case 1: //ändra tid
+                        Console.Clear();
+
+                        DateTime serviceDate = DateTime.Now;
+                        CollectDate(ref serviceDate);
+
+                        DateTime serviceTime = DateTime.Now;
+                        CollectTime(ref serviceTime, ref serviceDate);
+
+
+                        ServiceBooking newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, selectedBooking.ServiceType, serviceTime);
+                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
+
+                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
+
+                        Console.Clear();
+                        Console.WriteLine("Tiden på bokningen är nu ändrad!\n-------------------------");
+                        Menu.AdminMenu();
+                        break;
+
+                    case 2: // ändra regnummer
+                        CollectPlate(ref userInput);
+                        string newRegNr = userInput;
+
+                        newBooking = new ServiceBooking(selectedBooking.CustomerName, newRegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
+                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
+                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
+
+                        Console.Clear();
+                        Console.WriteLine("Registrerings numret är nu ändrad!\n-------------------------");
+                        Menu.AdminMenu();
+                        break;
+
+
+                    case 3: //ändra boknings namn
+
+                        string firstName = "", lastName = "";
+                        CollectName(ref firstName, ref lastName);
+
+                        string newName = firstName + " " + lastName;
+                        newBooking = new ServiceBooking(newName, selectedBooking.RegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
+
+                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
+                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.CustomerName == selectedBooking.CustomerName);
+
+                        Console.Clear();
+                        Console.WriteLine("Namnet på bokningen är nu ändrad!\n-------------------------");
+                        Menu.AdminMenu();
+                        break;
+
+                    case 4: //ändra service typ
+                        Console.WriteLine("Vilken servicetyp ska du ha:\n" +
+                            "1. Däckbyte\n" +
+                            "2. Hjulbalansernig\n" +
+                            "3. Däckförvaring\n" +
+                            "4. MotorService\n" +
+                            "5. Plåtknackning");
+
+                        if (int.TryParse(Console.ReadLine(), out userChoice))
+                        {
+                            switch (userChoice)
+                            {
+                                case 1: //däckbyte
+                                        //gör en ny bokning med den nya servicetypen
+                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Däckbyte, selectedBooking.ServiceTime);
+                                    Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
+                                    break;
+
+                                case 2: //hjulbalansering
+                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Hjulbalansering, selectedBooking.ServiceTime);
+                                    Program.Bookings.Add(newBooking);
+                                    break;
+                                case 3: //däckförvaring
+                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Däckförvaring, selectedBooking.ServiceTime);
+                                    Program.Bookings.Add(newBooking);
+                                    break;
+
+                                case 4: //motorservice
+                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.MotorService, selectedBooking.ServiceTime);
+                                    Program.Bookings.Add(newBooking);
+                                    break;
+
+                                case 5: //plåtknackning
+                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.PlåtKnackning, selectedBooking.ServiceTime);
+                                    Program.Bookings.Add(newBooking);
+                                    break;
+
+
+                            }
+                            try
+                            {
+                                Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceType == selectedBooking.ServiceType); //tar bort bokningen med gamla servicetypen.
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Ett fel uppstod vid borttagning av gammal bokning: " + ex.Message);
+                            }
+
+                            Console.Clear();
+                            Console.WriteLine("Servicetypen är nu ändrad!\n-------------------------");
+                            Menu.AdminMenu();
+                        }
+
+                        break;
+                }
+            }
+        }
+
+
+    }
+
+    static public void RemoveTime()
+    {
+        bool isBooked = false;
+
+        Console.Clear();
+        while (!isBooked)
+        {
+            isBooked = false; //säkerställer att boolen är false, om användaren inte vill avboka den tid som skrivits ut.
+
+            Console.WriteLine("Skriv in registrerings Numret på bilen som ska på service:");
+            string userInput = Console.ReadLine().ToUpper();
+
+            if (userInput == "AVBRYT") //vill man avbryta så kommer man till början av programmet.
+            {
+                Menu.StartMenu();
+            }
+
+            foreach (var booking in Program.Bookings)
+            {
+                if (userInput == booking.RegNr) //om reg nummer finns i databasen
+                {
+                    Console.WriteLine("är du säker på att du vill ta bort din bokning? (skriv \"JA\" eller \"NEJ\")\n{0}", booking.ToString());
+                    string userConfirm = Console.ReadLine();
+                    if (userConfirm.ToUpper() == "JA")
+                    {
+                        Program.Bookings.RemoveAll(u => u.RegNr == userInput); //tar bort bokningen
+                        Console.WriteLine("bokning med registrerings nummer {0} är nu borttagen.\n" +
+                            "---------------------------\n", userInput);
+                        isBooked = true;
+                        break;
+                    }
+                    else if (userConfirm.ToUpper() == "NEJ")
+                    {
+                        isBooked = true; //för att inte få ut texten att bokningen inte finns.
+                        continue;
+                    }
+                }
+            }
+
+            if (!isBooked) //om registreringsnummret inte blir hittat efter man kollat genom listan körs detta block.
+            {
+                Console.WriteLine("En bokning med {0} finns inte med i databasen.\n", userInput);
+            }
+
+        }
+
+
+    } //funktion som tar bort en bokad tid
+
     static public void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
     {
         bool validName = false;
@@ -244,229 +471,4 @@ internal class BookingLogic
         } while (!boolTime);
         return serviceTime;
     }
-
-    static public void EditBooking() //funktion för att ändra en bokad tid
-    {
-        bool isBooked = false;
-
-
-        Console.Clear();
-        while (!isBooked)
-        {
-            int i = 0;
-            isBooked = false;
-
-            Console.WriteLine("Skriv in regnummer för bilen på bokningen:\neller skriv \"AVBRYT\" för att avbryta");
-            string userInput = Console.ReadLine().ToUpper();
-            if (userInput == "AVBRYT")
-            {
-                Menu.AdminMenu();
-            }
-
-
-            foreach (var booking in Program.Bookings)
-            {
-                if (booking.RegNr == userInput)
-                {
-                    i++;
-                }
-            }
-
-            if (i > 1)
-            {
-                Console.WriteLine("Vilken bokning vill du ändra på:");
-                foreach (var booking in Program.Bookings)
-                {
-
-                    if (booking.RegNr == userInput)
-                    {
-                        foreach (var b in Program.Bookings) i = 0; i++;
-
-                        Console.WriteLine("{0}. {1}", i, booking.ToString());
-                    }
-                }
-                userInput = Console.ReadLine();
-                //ServiceBooking selectedBooking = Bookings.FirstOrDefault(b => b.RegNr == userInput);
-
-            }
-
-            ServiceBooking selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
-
-            if (selectedBooking == null)
-            {
-                Console.Clear();
-                Console.WriteLine("Vi hittar inte bokningen i detta registrerings nummer, försök igen\n---------------------");
-                continue;
-            }
-
-
-            Console.WriteLine("Vad vill du ändra i bokningen:\n" +
-                "1. Tid\n" +
-                "2. Registrerings nummer\n" +
-                "3. Boknings namn\n" +
-                "4. Service typ");
-
-            if (int.TryParse(Console.ReadLine(), out int userChoice))
-            {
-                switch (userChoice)
-                {
-                    case 1: //ändra tid
-                        Console.Clear();
-
-                        DateTime serviceDate = DateTime.Now;
-                        CollectDate(ref serviceDate);
-
-                        DateTime serviceTime = DateTime.Now;
-                        CollectTime(ref serviceTime, ref serviceDate);
-
-
-                        ServiceBooking newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, selectedBooking.ServiceType, serviceTime);
-                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
-
-                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
-
-                        Console.Clear();
-                        Console.WriteLine("Tiden på bokningen är nu ändrad!\n-------------------------");
-                        Menu.AdminMenu();
-                        break;
-
-                    case 2: // ändra regnummer
-                        CollectPlate(ref userInput);
-                        string newRegNr = userInput;
-
-                        newBooking = new ServiceBooking(selectedBooking.CustomerName, newRegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
-                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
-                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceTime == selectedBooking.ServiceTime); //tar bort den gamla bokningen
-
-                        Console.Clear();
-                        Console.WriteLine("Registrerings numret är nu ändrad!\n-------------------------");
-                        Menu.AdminMenu();
-                        break;
-
-
-                    case 3: //ändra boknings namn
-
-                        string firstName = "", lastName = "";
-                        CollectName(ref firstName, ref lastName);
-
-                        string newName = firstName + " " + lastName;
-                        newBooking = new ServiceBooking(newName, selectedBooking.RegNr, selectedBooking.ServiceType, selectedBooking.ServiceTime);
-
-                        Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
-                        Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.CustomerName == selectedBooking.CustomerName);
-
-                        Console.Clear();
-                        Console.WriteLine("Namnet på bokningen är nu ändrad!\n-------------------------");
-                        Menu.AdminMenu();
-                        break;
-
-                    case 4: //ändra service typ
-                        Console.WriteLine("Vilken servicetyp ska du ha:\n" +
-                            "1. Däckbyte\n" +
-                            "2. Hjulbalansernig\n" +
-                            "3. Däckförvaring\n" +
-                            "4. MotorService\n" +
-                            "5. Plåtknackning");
-
-                        if (int.TryParse(Console.ReadLine(), out userChoice))
-                        {
-                            switch (userChoice)
-                            {
-                                case 1: //däckbyte
-                                        //gör en ny bokning med den nya servicetypen
-                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Däckbyte, selectedBooking.ServiceTime);
-                                    Program.Bookings.Add(newBooking); //lägger in den i listan med bokningar
-                                    break;
-
-                                case 2: //hjulbalansering
-                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Hjulbalansering, selectedBooking.ServiceTime);
-                                    Program.Bookings.Add(newBooking);
-                                    break;
-                                case 3: //däckförvaring
-                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.Däckförvaring, selectedBooking.ServiceTime);
-                                    Program.Bookings.Add(newBooking);
-                                    break;
-
-                                case 4: //motorservice
-                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.MotorService, selectedBooking.ServiceTime);
-                                    Program.Bookings.Add(newBooking);
-                                    break;
-
-                                case 5: //plåtknackning
-                                    newBooking = new ServiceBooking(selectedBooking.CustomerName, selectedBooking.RegNr, ServiceType.PlåtKnackning, selectedBooking.ServiceTime);
-                                    Program.Bookings.Add(newBooking);
-                                    break;
-
-
-                            }
-                            try
-                            {
-                                Program.Bookings.RemoveAll(b => b.RegNr == selectedBooking.RegNr && b.ServiceType == selectedBooking.ServiceType); //tar bort bokningen med gamla servicetypen.
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("Ett fel uppstod vid borttagning av gammal bokning: " + ex.Message);
-                            }
-
-                            Console.Clear();
-                            Console.WriteLine("Servicetypen är nu ändrad!\n-------------------------");
-                            Menu.AdminMenu();
-                        }
-
-                        break;
-                }
-            }
-        }
-
-
-    }
-    static public void RemoveTime()
-    {
-        bool isBooked = false;
-
-        Console.Clear();
-        while (!isBooked)
-        {
-            isBooked = false; //säkerställer att boolen är false, om användaren inte vill avboka den tid som skrivits ut.
-
-            Console.WriteLine("Skriv in registrerings Numret på bilen som ska på service:");
-            string userInput = Console.ReadLine().ToUpper();
-
-            if (userInput == "AVBRYT") //vill man avbryta så kommer man till början av programmet.
-            {
-                Menu.StartMenu();
-            }
-
-            foreach (var booking in Program.Bookings)
-            {
-                if (userInput == booking.RegNr) //om reg nummer finns i databasen
-                {
-                    Console.WriteLine("är du säker på att du vill ta bort din bokning? (skriv \"JA\" eller \"NEJ\")\n{0}", booking.ToString());
-                    string userConfirm = Console.ReadLine();
-                    if (userConfirm.ToUpper() == "JA")
-                    {
-                        Program.Bookings.RemoveAll(u => u.RegNr == userInput); //tar bort bokningen
-                        Console.WriteLine("bokning med registrerings nummer {0} är nu borttagen.\n" +
-                            "---------------------------\n", userInput);
-                        isBooked = true;
-                        break;
-                    }
-                    else if (userConfirm.ToUpper() == "NEJ")
-                    {
-                        isBooked = true; //för att inte få ut texten att bokningen inte finns.
-                        continue;
-                    }
-                }
-            }
-
-            if (!isBooked) //om registreringsnummret inte blir hittat efter man kollat genom listan körs detta block.
-            {
-                Console.WriteLine("En bokning med {0} finns inte med i databasen.\n", userInput);
-            }
-
-        }
-
-
-    } //funktion som tar bort en bokad tid
-    
 }
