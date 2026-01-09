@@ -4,7 +4,7 @@ namespace Däckarn_bokningssystem
 {
     internal class Program
     {
-        public static List<ServiceBooking> Bookings = new List<ServiceBooking>();
+        public static List<ServiceBooking> Bookings = new List<ServiceBooking>(); //skapar en lista som håller alla bokningar
         static void Main(string[] args)
         {
 
@@ -37,7 +37,7 @@ namespace Däckarn_bokningssystem
                 "Adress: Ryckepungsvägen 1, Falun");
         }
 
-        public static string AboutUs()
+        public static string AboutUs() //metod som skriver ut information om företaget
         {
             string aboutUs = "Däckarns - Mer än bara däck \n\n" +
 

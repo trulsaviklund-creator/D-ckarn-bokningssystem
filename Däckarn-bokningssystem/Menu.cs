@@ -201,7 +201,7 @@ internal class Menu
                     Console.WriteLine();
 
                     break;
-                case 4:
+                case 4: //om oss
                     Console.Clear();
 
                     Console.WriteLine(Program.AboutUs());
