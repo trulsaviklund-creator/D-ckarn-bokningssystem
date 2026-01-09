@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Däckarn_bokningssystem;
 internal class Menu
 {
-    static public void StartMenu()
+    public static void StartMenu()
     {
         Console.WriteLine("Välkommen till Däckarns!\n" +
             "Vad vill du göra? Välj ditt alternativ & skriv in siffran för det valda aleternativet");
@@ -71,7 +71,7 @@ internal class Menu
 
     }
 
-    static public void AdminMenu() //meny alternativ för admin
+    public static void AdminMenu() //meny alternativ för admin
     {
         while (true)
         {
@@ -152,7 +152,7 @@ internal class Menu
         }
     }
 
-    static public void UserMenu() //menyalternativ för kund
+    public static void UserMenu() //menyalternativ för kund
     {
         while (true)
         {
@@ -162,9 +162,10 @@ internal class Menu
             Console.WriteLine("-------------------------------\n");
             Console.WriteLine("1. Boka tid\n" +
                 "2. Mina bokade tider\n" +
-                "3. Kontakt uppgifter\n" +
-                "4. Logga ut\n\n" +
-                "5. Exit program\n");
+                "3. Våra kontakt uppgifter\n" +
+                "4. Om oss\n" +
+                "5. Logga ut\n\n" +
+                "6. Exit program\n");
             int userInput;
             while (true)
             {
@@ -200,13 +201,22 @@ internal class Menu
                     Console.WriteLine();
 
                     break;
-                case 4: //logga ut
+                case 4:
+                    Console.Clear();
+
+                    Console.WriteLine(Program.AboutUs());
+                    Console.WriteLine("Tryck 'retur' för att gå tillbaka.");
+                    Console.ReadLine();
+
+                    Console.Clear();
+                    break;
+                case 5: //logga ut
 
                     Console.Clear();
                     StartMenu();
 
                     break;
-                case 5: //stäng ner programmet
+                case 6: //stäng ner programmet
 
                     Environment.Exit(0);
 

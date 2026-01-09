@@ -13,9 +13,9 @@ namespace Däckarn_bokningssystem
         public string RegNr { get; set; }
         public ServiceType ServiceType { get; set; }
         public DateTime ServiceTime { get; set; }
-    
 
-        public ServiceBooking (string customerName, string regNr, ServiceType serviceType, DateTime serviceTime)
+
+        public ServiceBooking(string customerName, string regNr, ServiceType serviceType, DateTime serviceTime)
         {
             CustomerName = customerName;
             RegNr = regNr;

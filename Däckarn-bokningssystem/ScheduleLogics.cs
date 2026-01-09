@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Däckarn_bokningssystem;
 internal class ScheduleLogics
 {
-    static public void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
+    public static void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
     {
         foreach (var booking in Program.Bookings)
         {
@@ -18,7 +14,7 @@ internal class ScheduleLogics
         }
     }
 
-    static public void ListAvailableTimes() //skriver ut alla tider lediga på en specifik dag.
+    public static void ListAvailableTimes() //skriver ut alla tider lediga på en specifik dag.
     {
         Console.Clear();
         bool listingTimes = true;
@@ -90,7 +86,7 @@ internal class ScheduleLogics
 
     }
 
-    static public bool IsTimeBooked(DateTime serviceTime) //metod för att kolla om en tid redan är bokad.
+    public static bool IsTimeBooked(DateTime serviceTime) //metod för att kolla om en tid redan är bokad.
     {
         bool isBooked = true; //default värde är att tiden är bokad.
         int i = 0;
@@ -111,7 +107,7 @@ internal class ScheduleLogics
         return isBooked;
     }
 
-    static public bool IsBussinessHours(DateTime serviceTime)
+    public static bool IsBussinessHours(DateTime serviceTime)
     {
         bool isBussinessHours = true;
 
@@ -127,7 +123,7 @@ internal class ScheduleLogics
         return isBussinessHours;
     } //metod som kollar om en tid är i arbetstimmar
 
-    static public void PrintBookedTimes() //metod för att loopa genom alla bokningar i databasen
+    public static void PrintBookedTimes() //metod för att loopa genom alla bokningar i databasen
     {
         Console.Clear();
         Console.WriteLine("Bokningar:\n");
@@ -138,13 +134,13 @@ internal class ScheduleLogics
         Console.WriteLine("");
     }
 
-    static public void PrintCustomerTimes()
+    public static void PrintCustomerTimes()
     {
         bool isBooked = false;
 
         while (!isBooked)
         {
-            Console.WriteLine("Skriv in kund namn:\nSkriv \"AVBRYT\" för att gå avbryta");
+            Console.WriteLine("Skriv in ditt registreringsnummer:\nSkriv \"AVBRYT\" för att gå avbryta");
             string userInput = Console.ReadLine();
 
             if (userInput == "AVBRYT") //vill man avbryta så kommer man till början av programmet.
@@ -155,22 +151,23 @@ internal class ScheduleLogics
 
             foreach (var booking in Program.Bookings)
             {
-                if (userInput.ToLower() == booking.CustomerName.ToLower()) //om namnet finns i databasen
+                if (userInput.ToUpper() == booking.RegNr) //om namnet finns i databasen
                 {
-                    Console.Clear();
                     Console.WriteLine(booking + "\n");
-
                     isBooked = true;
-                    break;
+
                 }
             }
+
+            Console.Clear();
 
             if (!isBooked) //om namnet inte blir hittat efter man kollat genom listan körs detta block.
             {
                 Console.Clear();
-                Console.WriteLine("En bokning i {0} finns inte.\n", userInput);
+                Console.WriteLine("En bokning för {0} finns inte.\n", userInput);
+                continue;
             }
 
         }
-    }
+    } //metod för att ta fram kundens bokade tider baserat på registrerings nummer.
 }
