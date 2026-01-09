@@ -104,12 +104,12 @@ internal class BookingLogic
                 }
             }
 
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput); 
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
 
             if (i > 1)
             {
                 i = 0;
-                Console.WriteLine("Vilken bokning vill du ändra på:");
+                Console.WriteLine("Vilken datum och tid på bokningen du vill du ändra på:\n(\"åååå-mm-dd hh:mm\")");
                 foreach (var booking in Program.Bookings)
                 {
 
@@ -117,16 +117,11 @@ internal class BookingLogic
                     {
                         i++;
 
-                        Console.WriteLine("{0}. {1}", i, booking.ToString());
+                        Console.WriteLine("bokning {0}: {1}", i, booking.ToString());
                     }
                 }
                 userInput = Console.ReadLine();
                 DateTime.TryParse(userInput, out DateTime chosenTime);
-
-                if(chosenTime == null)
-                {
-                    Console.WriteLine("skriv in vilken tid du vill ändra.");
-                }
 
                 selectedBooking = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
 
@@ -141,7 +136,7 @@ internal class BookingLogic
             }
 
 
-            Console.WriteLine("Vad vill du ändra i bokningen:\n" +
+            Console.WriteLine("\nVad vill du ändra i bokningen:\n" +
                 "1. Tid\n" +
                 "2. Registrerings nummer\n" +
                 "3. Boknings namn\n" +
@@ -264,48 +259,82 @@ internal class BookingLogic
 
     public static void RemoveTime()
     {
+        ServiceBooking selectedBooking = Program.Bookings.FirstOrDefault();
         bool isBooked = false;
+        int counter = 0;
+        DateTime chosenTime = DateTime.Now;
 
         Console.Clear();
         while (!isBooked)
         {
             isBooked = false; //säkerställer att boolen är false, om användaren inte vill avboka den tid som skrivits ut.
 
-            Console.WriteLine("Skriv in registrerings Numret på bilen som ska på service:");
+            Console.WriteLine("Skriv in registrerings Numret på bilen som ska på service:\n(skriv \"AVBRYT\" för att återgå till start.)");
             string userInput = Console.ReadLine().ToUpper();
 
             if (userInput == "AVBRYT") //vill man avbryta så kommer man till början av programmet.
             {
+                Console.Clear();
                 Menu.StartMenu();
             }
 
+
             foreach (var booking in Program.Bookings)
             {
-                if (userInput == booking.RegNr) //om reg nummer finns i databasen
+                if (booking.RegNr == userInput)
                 {
-                    Console.WriteLine("är du säker på att du vill ta bort din bokning? (skriv \"JA\" eller \"NEJ\")\n{0}", booking.ToString());
-                    string userConfirm = Console.ReadLine();
-                    if (userConfirm.ToUpper() == "JA")
-                    {
-                        Program.Bookings.RemoveAll(u => u.RegNr == userInput); //tar bort bokningen
-                        Console.WriteLine("bokning med registrerings nummer {0} är nu borttagen.\n" +
-                            "---------------------------\n", userInput);
-                        isBooked = true;
-                        break;
-                    }
-                    else if (userConfirm.ToUpper() == "NEJ")
-                    {
-                        isBooked = true; //för att inte få ut texten att bokningen inte finns.
-                        continue;
-                    }
+                    counter++;
                 }
             }
 
-            if (!isBooked) //om registreringsnummret inte blir hittat efter man kollat genom listan körs detta block.
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+
+            if (counter > 1)
             {
-                Console.WriteLine("En bokning med {0} finns inte med i databasen.\n", userInput);
+                counter = 0;
+                Console.Clear();
+                Console.WriteLine("Vilken datum och tid på bokningen du vill du ändra på:\n(\"åååå-mm-dd hh:mm\") eller 'retur' för att gå tillbaka)\n");
+                foreach (var booking in Program.Bookings)
+                {
+
+                    if (booking.RegNr == userInput)
+                    {
+                        counter++;
+
+                        Console.WriteLine("Bokning {0}: {1}", counter, booking.ToString());
+                    }
+                }
+                userInput = Console.ReadLine();
+                DateTime.TryParse(userInput, out chosenTime);
+
+                selectedBooking = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
+
             }
 
+            if(selectedBooking == null)
+            {
+                Console.Clear();
+                Console.WriteLine("du valde inte något av alternativen\n");
+                continue;
+            }
+            Console.Clear();
+            Console.WriteLine("Är du säker att du vill ta bort bokningen:\n{0}\n\n(Skriv \"ja\" eller \"nej\")", selectedBooking);
+            string userConfirm = Console.ReadLine();
+
+            if (userConfirm.ToUpper() == "JA")
+            {
+                Console.Clear();
+                Console.WriteLine("Bokningen den {0} för {1} är nu borttagen.\n", chosenTime, selectedBooking.RegNr);
+                Program.Bookings.RemoveAll(u => u.ServiceTime == chosenTime); //tar bort bokningen
+
+                isBooked = true;
+                break;
+            }
+            else if (userConfirm.ToUpper() == "NEJ")
+            {
+                isBooked = true; //för att inte få ut texten att bokningen inte finns.
+                continue;
+            }
         }
 
 
@@ -422,7 +451,10 @@ internal class BookingLogic
         bool boolDate = false;
         while (!boolDate || serviceDate < DateTime.Now)
         {
-            string userInput = Console.ReadLine();
+            string userInput = Console.ReadLine(); 
+
+            if (userInput == "AVBRYT") Menu.StartMenu(); //återgår till start av program, om användaren vill avbryta.
+
             boolDate = DateTime.TryParse(userInput, out serviceDate);
 
             if (!boolDate)
@@ -433,7 +465,6 @@ internal class BookingLogic
             {
                 Console.WriteLine("Vänligen skriv ett datum i framtiden.");
             }
-            else if (userInput == "AVBRYT") Menu.StartMenu();
 
         }
 

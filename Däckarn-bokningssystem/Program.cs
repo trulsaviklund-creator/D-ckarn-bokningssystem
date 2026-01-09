@@ -12,7 +12,7 @@ namespace Däckarn_bokningssystem
             Bookings.Add(newBooking);
             newBooking = new ServiceBooking("Trulsa Viklund", "FWF18N", ServiceType.Däckbyte, new DateTime(2026, 2, 15, 13, 00, 00));
             Bookings.Add(newBooking);
-            newBooking = new ServiceBooking("Trulsa Viklund", "FWF18N", ServiceType.Däckbyte, new DateTime(2026, 2, 15, 14, 00, 00));
+            newBooking = new ServiceBooking("Trulsa Viklund", "FWF18N", ServiceType.Service, new DateTime(2026, 2, 15, 14, 00, 00));
             Bookings.Add(newBooking);
             newBooking = new ServiceBooking("Göran Göransson", "OLW08N", ServiceType.Hjulbalansering, new DateTime(2026, 2, 15, 11, 00, 00));
             Bookings.Add(newBooking);
