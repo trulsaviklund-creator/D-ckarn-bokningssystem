@@ -6,6 +6,7 @@ internal class BookingLogic
     public static void BookTime() //funktion för att boka en tjänst
     {
 
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [], Efternamn [], Registreringsnummer [], Tjänst [], Datum [], Tid []");
         //skriva in boknings namn
         string firstName = "", lastName = "";
@@ -13,6 +14,7 @@ internal class BookingLogic
         Console.Clear();
 
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [], Tjänst [], Datum [], Tid []");
         //skriva in regnummer på fordnonet
         string regNr = "ABC123";
@@ -20,6 +22,7 @@ internal class BookingLogic
         Console.Clear();
 
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [], Datum [], Tid []");
         //väljer service typ
         ServiceType serviceType = new ServiceType();
@@ -27,6 +30,7 @@ internal class BookingLogic
         Console.Clear();
 
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [*], Datum [], Tid []");
         //välja datum
         DateTime serviceDate = DateTime.Now;
@@ -34,6 +38,7 @@ internal class BookingLogic
         Console.Clear();
 
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [*], Datum [*], Tid []");
         //lägga in tiden
         DateTime serviceTime = DateTime.Now;
@@ -83,7 +88,7 @@ internal class BookingLogic
             int i = 0;
             isBooked = false;
 
-            Console.WriteLine("Skriv in regnummer för bilen på bokningen:\neller skriv \"AVBRYT\" för att avbryta");
+            Console.WriteLine("Skriv in regnummer för bilen på bokningen:\neller skriv \"AVBRYT\" för att avbryta\n");
             string userInput = Console.ReadLine().ToUpper();
             if (userInput == "AVBRYT")
             {
@@ -99,25 +104,34 @@ internal class BookingLogic
                 }
             }
 
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput); 
+
             if (i > 1)
             {
+                i = 0;
                 Console.WriteLine("Vilken bokning vill du ändra på:");
                 foreach (var booking in Program.Bookings)
                 {
 
                     if (booking.RegNr == userInput)
                     {
-                        foreach (var b in Program.Bookings) i = 0; i++;
+                        i++;
 
                         Console.WriteLine("{0}. {1}", i, booking.ToString());
                     }
                 }
                 userInput = Console.ReadLine();
-                selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+                DateTime.TryParse(userInput, out DateTime chosenTime);
+
+                if(chosenTime == null)
+                {
+                    Console.WriteLine("skriv in vilken tid du vill ändra.");
+                }
+
+                selectedBooking = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
 
             }
 
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
 
             if (selectedBooking == null)
             {
@@ -308,6 +322,7 @@ internal class BookingLogic
             Console.Clear();
             if (firstName == "AVBRYT") Menu.StartMenu();
             Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
+        Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
             Console.WriteLine("Förnamn [*], Efternamn [], Registreringsnummer [], Tjänst [], Datum [], Tid []");
             Console.WriteLine("\nAnge Efternamn:");
             lastName = Console.ReadLine().Trim();
@@ -332,7 +347,7 @@ internal class BookingLogic
     public static void CollectPlate(ref string regNr)//metod som hämtar registrerings nummer inför bokning
     {
 
-        Console.WriteLine("\nAnge Registreringsnummer: \nExempel: " + regNr);
+        Console.WriteLine("\nAnge Registreringsnummer: \nExempel: ABC123");
         while (true)
         {
             regNr = Console.ReadLine().ToUpper();

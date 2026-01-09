@@ -5,13 +5,21 @@ internal class ScheduleLogics
 {
     public static void PrintBookingsToday() //skriver ut alla tider som har en bokning på ett specifikt datum.
     {
+        int counter = 0;
+        Console.Clear();
         foreach (var booking in Program.Bookings)
         {
             if (booking.ServiceTime.Date == DateTime.Now.Date)
             {
                 Console.WriteLine(booking);
+                counter++;
             }
         }
+        if(counter == 0)
+        {
+            Console.WriteLine("Det finns inga bokningar idag.\n");
+        }
+
     }
 
     public static void ListAvailableTimes() //skriver ut alla tider lediga på en specifik dag.
