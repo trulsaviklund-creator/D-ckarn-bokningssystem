@@ -346,8 +346,6 @@ internal class BookingLogic
             {
                 Menu.StartMenu();
             }
-
-            regNr = "";
             break;
 
         }

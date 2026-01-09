@@ -149,7 +149,6 @@ internal class ScheduleLogics
                 Menu.StartMenu();
             }
 
-            Console.Clear();
             foreach (var booking in Program.Bookings)
             {
                 if (userInput.ToUpper() == booking.RegNr) //om namnet finns i databasen
