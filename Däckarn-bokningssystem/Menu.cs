@@ -105,7 +105,6 @@ internal class Menu
                 case 1: //skriv ut alla bokningar
 
                     ScheduleLogics.PrintBookedTimes();
-                    break;
 
                     break;
                 case 2: //lägg till bokning (boka tid)
@@ -185,17 +184,16 @@ internal class Menu
                     Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
                     BookingLogic.BookTime();
 
-                    BookingLogic.BookTime();
                     break;
-
                 case 2: //visa användarens bokade tider
+
                     Console.Clear();
 
                     ScheduleLogics.PrintCustomerTimes();
 
                     break;
-
                 case 3: //skriva ut kontaktuppgifter
+
                     Console.Clear();
 
                     Program.PrintContactInfo();
@@ -204,14 +202,12 @@ internal class Menu
                     break;
                 case 4: //logga ut
 
-                case 4: //logga ut
                     Console.Clear();
                     StartMenu();
 
                     break;
                 case 5: //stäng ner programmet
 
-                case 5: //stäng ner programmet
                     Environment.Exit(0);
 
                     break;
