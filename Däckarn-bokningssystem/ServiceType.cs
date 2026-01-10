@@ -1,7 +1,7 @@
 using System;
 
 namespace Däckarn_bokningssystem;
-public enum ServiceType
+public enum ServiceType //enum som innehåller företagets olika tjänster
 {
     Däckbyte,
     Hjulbalansering,

@@ -9,6 +9,7 @@ namespace Däckarn_bokningssystem
 {
     internal class ServiceBooking
     {
+        //skapade properties som innehåller namn, regnr, tjänstetyp och tidpunkt för bokningen
         public string CustomerName { get; set; }
         public string RegNr { get; set; }
         public ServiceType ServiceType { get; set; }
@@ -23,7 +24,8 @@ namespace Däckarn_bokningssystem
             ServiceTime = serviceTime;
         }
 
-        public override string ToString()
+        //metod för att skriva ut bokningsinformationen, vi har gjort om ToString metoden för att skriva ut en string istället för objektets position
+        public override string ToString() 
         {
             return $"Kund: {CustomerName} | RegNr: {RegNr} | Tjänst: {ServiceType} | datum och tid: {ServiceTime}";
         }

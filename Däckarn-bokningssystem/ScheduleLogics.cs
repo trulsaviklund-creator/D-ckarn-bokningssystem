@@ -15,7 +15,7 @@ internal class ScheduleLogics
                 counter++;
             }
         }
-        if(counter == 0)
+        if(counter == 0) //Om det inte finns bokningar idag körs detta.
         {
             Console.WriteLine("Det finns inga bokningar idag.\n");
         }
@@ -99,7 +99,7 @@ internal class ScheduleLogics
         bool isBooked = true; //default värde är att tiden är bokad.
         int i = 0;
 
-        foreach (var booking in Program.Bookings)
+        foreach (var booking in Program.Bookings) //loopar genom alla bokningar i databasen
         {
             if (booking.ServiceTime == serviceTime)
             {
@@ -115,7 +115,7 @@ internal class ScheduleLogics
         return isBooked;
     }
 
-    public static bool IsBussinessHours(DateTime serviceTime)
+    public static bool IsBussinessHours(DateTime serviceTime) //metod för att kolla om en tid är innanför öppettiderna
     {
         bool isBussinessHours = true;
 
@@ -142,7 +142,7 @@ internal class ScheduleLogics
         Console.WriteLine("");
     }
 
-    public static void PrintCustomerTimes()
+    public static void PrintCustomerTimes() //metod för att ta fram kundens bokade tider baserat på registrerings nummer.
     {
         bool isBooked = false;
 

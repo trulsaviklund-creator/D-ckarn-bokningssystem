@@ -7,7 +7,7 @@ internal class BookingLogic
     {
 
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
-        Console.WriteLine("Förnamn [], Efternamn [], Registreringsnummer [], Tjänst [], Datum [], Tid []");
+        Console.WriteLine("Förnamn [], Efternamn [], Registreringsnummer [], Tjänst [], Datum [], Tid []"); //status-bar som visar användaren var i bokningen hen befinner sig
         //skriva in boknings namn
         string firstName = "", lastName = "";
         CollectName(ref firstName, ref lastName);
@@ -83,7 +83,7 @@ internal class BookingLogic
 
         Console.Clear();
 
-        while (!isBooked)
+        while (!isBooked) //while loop för att hitta bokningen som ska ändras
         {
             int i = 0;
             isBooked = false;
@@ -96,15 +96,15 @@ internal class BookingLogic
             }
 
 
-            foreach (var booking in Program.Bookings)
+            foreach (var booking in Program.Bookings) //kontrollerar hur många bokningar som finns på det regnumret
             {
-                if (booking.RegNr == userInput)
+                if (booking.RegNr == userInput) 
                 {
-                    i++;
+                    i++; //räknar antal bokningar med det regnumret
                 }
             }
 
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput); //hämtar bokningen med det regnumret
 
             if (i > 1)
             {
@@ -113,7 +113,7 @@ internal class BookingLogic
                 foreach (var booking in Program.Bookings)
                 {
 
-                    if (booking.RegNr == userInput)
+                    if (booking.RegNr == userInput) 
                     {
                         i++;
 
@@ -287,7 +287,7 @@ internal class BookingLogic
                 }
             }
 
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput); //hämtar bokningen med det regnumret
 
 
 
@@ -304,7 +304,7 @@ internal class BookingLogic
                     {
                         counter++;
 
-                        Console.WriteLine("Bokning {0}: {1}", counter, booking.ToString());
+                        Console.WriteLine("Bokning {0}: {1}", counter, booking.ToString()); //skriver ut alla bokningar med det regnumret
                     }
                 }
                 userInput = Console.ReadLine();
@@ -345,7 +345,7 @@ internal class BookingLogic
 
     public static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
     {
-        bool validName = false;
+        bool validName = false; //boolean för att kontrollera giltighet av namn
         while (!validName)
         {
 
@@ -361,12 +361,12 @@ internal class BookingLogic
 
             if (lastName == "AVBRYT") Menu.StartMenu();
 
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName)) //kontrollerar att namnen inte är tomma
             {
                 Console.WriteLine("Vänligen ange ett giltigt för- och efternamn.\n");
                 continue;
             }
-            else if (firstName.Any(char.IsDigit) || lastName.Any(char.IsDigit))
+            else if (firstName.Any(char.IsDigit) || lastName.Any(char.IsDigit)) //kontrollerar att namnen inte innehåller siffror
             {
                 Console.WriteLine("Namn kan inte innehålla siffror, försök igen.\n");
                 continue;
@@ -384,7 +384,7 @@ internal class BookingLogic
         {
             regNr = Console.ReadLine().ToUpper();
 
-            if (regNr.Length > 7 || regNr.Length < 2)
+            if (regNr.Length > 7 || regNr.Length < 2) //kontrollerar att regnumret är mellan 2-7 tecken
             {
                 Console.WriteLine("Registreringsnummret måste vara mellan 2 och 7 symboler");
                 continue;
@@ -452,7 +452,7 @@ internal class BookingLogic
             "\n(\"åååå-mm-dd\")");
 
         bool boolDate = false;
-        while (!boolDate || serviceDate < DateTime.Now)
+        while (!boolDate || serviceDate < DateTime.Now) //kontrollerar att datumet är i giltigt format 
         {
             string userInput = Console.ReadLine(); 
 
@@ -464,7 +464,7 @@ internal class BookingLogic
             {
                 Console.WriteLine("Vänligen skriv datumet i format visat ovanför");
             }
-            else if (serviceDate < DateTime.Now)
+            else if (serviceDate < DateTime.Now) //kontrollerar att datumet är i framtiden
             {
                 Console.WriteLine("Vänligen skriv ett datum i framtiden.");
             }
@@ -490,12 +490,12 @@ internal class BookingLogic
             {
                 Console.WriteLine("Ange tid i rätt format!");
             }
-            else if (ScheduleLogics.IsBussinessHours(serviceTime))
+            else if (ScheduleLogics.IsBussinessHours(serviceTime)) //kontrollerar så att tiden användaren ger är inom öppettiderna
             {
                 Console.WriteLine("Du kan endast boka tid 07:00-15:00");
                 boolTime = false;
             }
-            else if (serviceTime.Minute != 0)
+            else if (serviceTime.Minute != 0) //kontrollerar så att tiden är i heltimmar
             {
 
                 Console.WriteLine("Vi kan bara boka tider hela timmar, ska vi boka in dig {0}?  (ja/nej):", rounded.ToString("yyyy MMMM dd - HH:mm"));
@@ -527,7 +527,7 @@ internal class BookingLogic
             }
             else
             {
-                serviceTime = rounded;
+                serviceTime = rounded; //sätter tiden till den valda dagen med den valda timmen.
 
             }
 
