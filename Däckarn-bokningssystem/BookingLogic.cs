@@ -259,7 +259,8 @@ internal class BookingLogic
 
     public static void RemoveTime()
     {
-        ServiceBooking selectedBooking = Program.Bookings.FirstOrDefault();
+        ServiceBooking selectedBookingPlate = Program.Bookings.FirstOrDefault();
+        ServiceBooking selectedBookingTime = Program.Bookings.FirstOrDefault();
         bool isBooked = false;
         int counter = 0;
         DateTime chosenTime = DateTime.Now;
@@ -287,8 +288,12 @@ internal class BookingLogic
                 }
             }
 
-            selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
+            selectedBookingPlate = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput);
 
+            selectedBookingTime = selectedBookingPlate;
+
+
+            //om det finns fler bokningar i registreringsnumret.
             if (counter > 1)
             {
                 counter = 0;
@@ -307,25 +312,25 @@ internal class BookingLogic
                 userInput = Console.ReadLine();
                 DateTime.TryParse(userInput, out chosenTime);
 
-                selectedBooking = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
+                selectedBookingTime = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
 
             }
 
-            if(selectedBooking == null)
+            if(selectedBookingTime == null)
             {
                 Console.Clear();
                 Console.WriteLine("du valde inte något av alternativen\n");
                 continue;
             }
             Console.Clear();
-            Console.WriteLine("Är du säker att du vill ta bort bokningen:\n{0}\n\n(Skriv \"ja\" eller \"nej\")", selectedBooking);
+            Console.WriteLine("Är du säker att du vill ta bort bokningen:\n{0}\n\n(Skriv \"ja\" eller \"nej\")", selectedBookingTime);
             string userConfirm = Console.ReadLine();
 
             if (userConfirm.ToUpper() == "JA")
             {
                 Console.Clear();
-                Console.WriteLine("Bokningen den {0} för {1} är nu borttagen.\n", chosenTime, selectedBooking.RegNr);
-                Program.Bookings.RemoveAll(u => u.ServiceTime == chosenTime); //tar bort bokningen
+                Console.WriteLine("Bokningen den {0} för {1} är nu borttagen.\n", chosenTime, selectedBookingPlate.RegNr);
+                Program.Bookings.Remove(selectedBookingTime); //tar bort bokningen
 
                 isBooked = true;
                 break;
