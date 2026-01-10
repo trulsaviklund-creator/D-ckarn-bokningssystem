@@ -20,7 +20,7 @@ namespace Däckarn_bokningssystem
 
             /*
              * 
-             * hård kodade tider^^
+             * hård kodade bokade tider^^
              * 
              * 
              */

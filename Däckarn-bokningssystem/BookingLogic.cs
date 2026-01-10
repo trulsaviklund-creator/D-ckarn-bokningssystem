@@ -6,41 +6,41 @@ internal class BookingLogic
     public static void BookTime() //funktion för att boka en tjänst
     {
 
+        //skriva in boknings namn
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [], Efternamn [], Registreringsnummer [], Tjänst [], Datum [], Tid []"); //status-bar som visar användaren var i bokningen hen befinner sig
-        //skriva in boknings namn
         string firstName = "", lastName = "";
         CollectName(ref firstName, ref lastName);
         Console.Clear();
 
+        //skriva in regnummer på fordnonet
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [], Tjänst [], Datum [], Tid []");
-        //skriva in regnummer på fordnonet
         string regNr = "ABC123";
         CollectPlate(ref regNr);
         Console.Clear();
 
+        //väljer service typ
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [], Datum [], Tid []");
-        //väljer service typ
         ServiceType serviceType = new ServiceType();
         serviceType = (ServiceType)ChooseServiceType();
         Console.Clear();
 
+        //välja datum
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [*], Datum [], Tid []");
-        //välja datum
         DateTime serviceDate = DateTime.Now;
         CollectDate(ref serviceDate);
         Console.Clear();
 
+        //lägga in tiden
         Console.WriteLine("~~ Boka tid - Däckarns ~~\n");
         Console.WriteLine("Skriv \"AVBRYT\" för att gå tillbaks till menyn");
         Console.WriteLine("Förnamn [*], Efternamn [*], Registreringsnummer [*], Tjänst [*], Datum [*], Tid []");
-        //lägga in tiden
         DateTime serviceTime = DateTime.Now;
         CollectTime(ref serviceTime, ref serviceDate);
 
@@ -53,6 +53,7 @@ internal class BookingLogic
         Console.WriteLine("Bokning skapad:\n{0}\n", newBooking.ToString()); //boknings bekräftelse till användaren
         Console.WriteLine("För att avboka, skriv regnummer till våran mail: Däckarns@info.se\n");
 
+        //kort logik för den temporära kostnaden
         Console.Write("Den temporära kostnaden ligger på:");
         switch ((int)serviceType)
         {
@@ -86,17 +87,18 @@ internal class BookingLogic
         while (!isBooked) //while loop för att hitta bokningen som ska ändras
         {
             int i = 0;
-            isBooked = false;
 
             Console.WriteLine("Skriv in regnummer för bilen på bokningen:\neller skriv \"AVBRYT\" för att avbryta\n");
             string userInput = Console.ReadLine().ToUpper();
+
+            //logik för att kunna gå tillbaka till menyn.
             if (userInput == "AVBRYT")
             {
                 Menu.AdminMenu();
             }
 
-
-            foreach (var booking in Program.Bookings) //kontrollerar hur många bokningar som finns på det regnumret
+            //kontrollerar hur många bokningar som finns på det regnumret
+            foreach (var booking in Program.Bookings)
             {
                 if (booking.RegNr == userInput) 
                 {
@@ -106,6 +108,7 @@ internal class BookingLogic
 
             selectedBooking = Program.Bookings.FirstOrDefault(b => b.RegNr == userInput); //hämtar bokningen med det regnumret
 
+            //om det finns fler än en bokning i reg. numret.
             if (i > 1)
             {
                 i = 0;
@@ -127,7 +130,7 @@ internal class BookingLogic
 
             }
 
-
+            //om det inte blev någon bokning vald
             if (selectedBooking == null)
             {
                 Console.Clear();
@@ -265,9 +268,10 @@ internal class BookingLogic
         DateTime chosenTime = DateTime.Now;
 
         Console.Clear();
+
         while (!isBooked)
         {
-            isBooked = false; //säkerställer att boolen är false, om användaren inte vill avboka den tid som skrivits ut.
+            isBooked = false; //säkerställer att boolen är false när loopen börjar, om användaren inte vill avboka den tid som skrivits ut.
 
             Console.WriteLine("Skriv in registrerings Numret på bilen som ska på service:\n(skriv \"AVBRYT\" för att återgå till start.)");
             string userInput = Console.ReadLine().ToUpper();
@@ -278,7 +282,7 @@ internal class BookingLogic
                 Menu.StartMenu();
             }
 
-
+            //räknar hur många gånger en bokning blivit gjort med userInputens värde
             foreach (var booking in Program.Bookings)
             {
                 if (booking.RegNr == userInput)
@@ -295,6 +299,7 @@ internal class BookingLogic
             if (counter > 1)
             {
                 counter = 0;
+
                 Console.Clear();
                 Console.WriteLine("Vilken datum och tid på bokningen du vill du ändra på:\n(\"åååå-mm-dd hh:mm\") eller 'retur' för att gå tillbaka)\n");
                 foreach (var booking in Program.Bookings)
@@ -307,11 +312,11 @@ internal class BookingLogic
                         Console.WriteLine("Bokning {0}: {1}", counter, booking.ToString()); //skriver ut alla bokningar med det regnumret
                     }
                 }
+
                 userInput = Console.ReadLine();
                 DateTime.TryParse(userInput, out chosenTime);
 
                 selectedBooking = Program.Bookings.FirstOrDefault(b => b.ServiceTime == chosenTime);
-
             }
 
             if(selectedBooking == null)
@@ -320,6 +325,7 @@ internal class BookingLogic
                 Console.WriteLine("du valde inte något av alternativen\n");
                 continue;
             }
+
             Console.Clear();
             Console.WriteLine("Är du säker att du vill ta bort bokningen:\n{0}\n\n(Skriv \"ja\" eller \"nej\")", selectedBooking);
             string userConfirm = Console.ReadLine();
@@ -341,7 +347,7 @@ internal class BookingLogic
         }
 
 
-    } //funktion som tar bort en bokad tid
+    } 
 
     public static void CollectName(ref string firstName, ref string lastName) //metod som hämtar för- och efternamn inför bokning
     {
@@ -409,6 +415,7 @@ internal class BookingLogic
         "4. Service\n" +
         "5. Plåtknackning");
 
+        //meny logik för att välja servicetyp
         while (true)
         {
             string userInput = Console.ReadLine();
@@ -442,7 +449,7 @@ internal class BookingLogic
 
             Console.WriteLine("Felaktig input, försök igen");
         }
-        return (int)serviceType;
+        return (int)serviceType; //returnerar en int som motsvarar ett enum-värde.
     }
 
     public static DateTime CollectDate(ref DateTime serviceDate) //metod som hämtar kundens val av datum.
@@ -454,7 +461,7 @@ internal class BookingLogic
         bool boolDate = false;
         while (!boolDate || serviceDate < DateTime.Now) //kontrollerar att datumet är i giltigt format 
         {
-            string userInput = Console.ReadLine(); 
+            string userInput = Console.ReadLine();
 
             if (userInput == "AVBRYT") Menu.StartMenu(); //återgår till start av program, om användaren vill avbryta.
 
@@ -480,13 +487,14 @@ internal class BookingLogic
         do
         {
             Console.WriteLine("\nAnge start-tiden för bokning:\n(Öppettider: 07:00-15:00)");
+
             string userInput = Console.ReadLine();
             boolTime = DateTime.TryParse(userInput, out serviceTime);
 
             DateTime rounded = new DateTime(serviceDate.Year, serviceDate.Month, serviceDate.Day, serviceTime.Hour, 00, 00);
 
 
-            if (!boolTime)
+            if (!boolTime) //om värdet inte går att parsea
             {
                 Console.WriteLine("Ange tid i rätt format!");
             }
@@ -520,11 +528,6 @@ internal class BookingLogic
 
                 }
             }
-            else if (serviceTime < serviceTime.Date) //använder .Date i detta sammahang ifall programmet rättas senare på dagen.. annars bör DateTime.Now användas.
-            {
-                Console.WriteLine("Du kan inte boka bakåt i tiden");
-                boolTime = false;
-            }
             else
             {
                 serviceTime = rounded; //sätter tiden till den valda dagen med den valda timmen.
@@ -533,7 +536,7 @@ internal class BookingLogic
 
 
 
-            if (ScheduleLogics.IsTimeBooked(serviceTime))
+            if (ScheduleLogics.IsTimeBooked(serviceTime)) //om tiden redan är bokan körs detta.
             {
                 Console.WriteLine("Tiden är redan bokad, var god välj en annan");
                 boolTime = false;

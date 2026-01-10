@@ -154,6 +154,8 @@ internal class Menu
 
     public static void UserMenu() //menyalternativ för kund
     {
+        int userInput;
+
         while (true)
         {
             Console.WriteLine("~~ Välkommen till Däckarns ~~\n" +
@@ -166,7 +168,9 @@ internal class Menu
                 "4. Om oss\n" +
                 "5. Logga ut\n\n" +
                 "6. Exit program\n");
-            int userInput;
+
+
+            //kontrollerar så att userInput är ett giltigt alternativ
             while (true)
             {
                 if (!int.TryParse(Console.ReadLine(), out userInput))
