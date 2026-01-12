@@ -29,6 +29,7 @@ namespace Däckarn_bokningssystem
 
 
         } //end of main
+
         public static void PrintContactInfo() //metod som skriver ut kontaktuppgifter till kunden
         {
             Console.WriteLine("Däckarns AB\n" +
